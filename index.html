@@ -360,29 +360,52 @@
     .footer-nav a:hover { color:white; }
     .footer-copy { font-size:11px; color:rgba(255,255,255,.58); line-height:1.8; }
 
+    /* ===== ハンバーガーボタン（PCでは非表示） ===== */
+    .hamburger { display:none; }
+
+    /* ===== モバイルメニュー（PCでは非表示） ===== */
+    .mob-nav-overlay {
+      display:none; position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:300;
+      opacity:0; transition:opacity .25s;
+    }
+    .mob-nav-overlay.show { opacity:1; }
+    .mob-nav {
+      position:fixed; top:0; right:0; bottom:0; width:72%; max-width:280px;
+      background:white; z-index:400; padding:20px 20px 40px;
+      transform:translateX(100%); transition:transform .3s ease;
+      overflow-y:auto; box-shadow:-4px 0 24px rgba(0,0,0,.12);
+    }
+    .mob-nav.show { transform:translateX(0); }
+    .mob-nav-close {
+      display:block; margin-left:auto; background:none; border:none;
+      font-size:22px; color:var(--muted); padding:4px 8px; margin-bottom:20px;
+    }
+    .mob-nav ul { list-style:none; }
+    .mob-nav ul li { border-bottom:1px solid var(--border); }
+    .mob-nav ul a {
+      display:block; padding:15px 8px;
+      font-family:'Mulish',sans-serif; font-size:15px; font-weight:700;
+      color:var(--text); text-decoration:none; letter-spacing:.08em;
+      transition:color .15s;
+    }
+    .mob-nav ul a span { display:block; font-size:11px; color:var(--muted); font-weight:400; margin-top:2px; }
+    .mob-nav ul a.active, .mob-nav ul a:hover { color:var(--blue); }
+
     /* ===== RESPONSIVE ===== */
     @media (max-width:680px) {
-      nav {
-        height:auto; padding:10px 16px;
-        flex-wrap:wrap; gap:8px; align-items:center;
-      }
+      nav { height:60px; padding:0 16px; }
       .nav-logo-img { height:36px; }
       .nav-logo .en { font-size:9px; }
       .nav-logo .ja { font-size:16px; }
-      .nav-links {
-        width:100%;
-        display:grid;
-        grid-template-columns:repeat(2,1fr);
-        gap:4px;
+      .nav-links { display:none; }
+      .hamburger {
+        display:flex; flex-direction:column; justify-content:center; gap:5px;
+        background:none; border:none; padding:8px; cursor:pointer;
       }
-      .nav-links a {
-        font-size:11px; letter-spacing:.06em;
-        padding:6px 8px; border-radius:8px;
-        background:rgba(255,255,255,.12);
-        text-align:center; opacity:1;
+      .hamburger span {
+        display:block; width:22px; height:2px; background:white; border-radius:2px;
+        transition:transform .3s, opacity .3s;
       }
-      .nav-links a span { display:block; font-size:9px; opacity:.8; }
-      .nav-links a:hover, .nav-links a.active { background:rgba(255,255,255,.25); }
       .hero h1 { font-size:40px; }
       main { padding:0 16px 60px; }
       .sim-card { padding:20px; }
@@ -392,7 +415,7 @@
       .contact-popup { display:none !important; }
     }
     @media (min-width:681px) {
-      .popup-overlay, .contact-popup-mobile { display:none !important; }
+      .popup-overlay, .contact-popup-mobile, .mob-nav-overlay, .mob-nav { display:none !important; }
     }
   </style>
 </head>
@@ -415,7 +438,24 @@
     <li><a href="#" class="active">MENU<span>料金表</span></a></li>
     <li><a href="#">CONTACT<span>お問い合わせ</span></a></li>
   </ul>
+  <button class="hamburger" id="hamburger" onclick="toggleMobNav()" aria-label="メニューを開く">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
+
+<!-- モバイルナビ -->
+<div class="mob-nav-overlay" id="mob-nav-overlay" onclick="closeMobNav()"></div>
+<div class="mob-nav" id="mob-nav">
+  <button class="mob-nav-close" onclick="closeMobNav()">✕</button>
+  <ul>
+    <li><a href="#">HOME<span>ホーム</span></a></li>
+    <li><a href="#">ABOUT<span>プロフィール</span></a></li>
+    <li><a href="#">GALLERY<span>ギャラリー</span></a></li>
+    <li><a href="#">COMMISSION<span>ご依頼について</span></a></li>
+    <li><a href="#" class="active">MENU<span>料金表</span></a></li>
+    <li><a href="#">CONTACT<span>お問い合わせ</span></a></li>
+  </ul>
+</div>
 
 <!-- HERO -->
 <div class="hero">
@@ -970,6 +1010,22 @@
 </footer>
 
 <script>
+  /* ===== ハンバーガーメニュー ===== */
+  function toggleMobNav() {
+    const nav     = document.getElementById('mob-nav');
+    const overlay = document.getElementById('mob-nav-overlay');
+    const isOpen  = nav.classList.toggle('show');
+    overlay.style.display = 'block';
+    requestAnimationFrame(() => overlay.classList.toggle('show', isOpen));
+    if (!isOpen) setTimeout(() => { overlay.style.display = 'none'; }, 250);
+  }
+  function closeMobNav() {
+    document.getElementById('mob-nav').classList.remove('show');
+    const overlay = document.getElementById('mob-nav-overlay');
+    overlay.classList.remove('show');
+    setTimeout(() => { overlay.style.display = 'none'; }, 250);
+  }
+
   /* ===== カテゴリ切り替え ===== */
   let currentCat  = 'illust';
   let currentTier = 'all';
