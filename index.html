@@ -37,8 +37,8 @@
     }
     .nav-logo { display:flex; align-items:center; gap:14px; }
     .nav-logo-img { height:60px; width:auto; object-fit:contain; }
-    .nav-logo .en { font-family:'Lato',sans-serif; font-size:12px; color:rgba(255,255,255,.85); letter-spacing:.18em; display:block; line-height:1; margin-bottom:2px; }
-    .nav-logo .ja { font-family:'Mulish',sans-serif; font-weight:900; font-size:26px; color:white; line-height:1; }
+    .nav-logo .en, .footer-logo .en { font-family:'Lato',sans-serif; font-size:12px; color:rgba(255,255,255,.85); letter-spacing:.18em; display:block; line-height:1; margin-bottom:2px; }
+    .nav-logo .ja, .footer-logo .ja { font-family:'Mulish',sans-serif; font-weight:900; font-size:26px; color:white; line-height:1; }
     .nav-links { display:flex; gap:32px; list-style:none; }
     .nav-links a {
       color:white; text-decoration:none; font-family:'Mulish',sans-serif;
@@ -113,13 +113,13 @@
     /* ===== 料金帯グリッド ===== */
     .tier-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin:18px 0; }
     .tier-card { border-radius:var(--r-md); padding:16px; border:2px solid; }
-    .tier-card.ume   { border-color:var(--green); background:#f5fbf4; }
-    .tier-card.take  { border-color:var(--blue);  background:var(--blue-ll); }
-    .tier-card.matsu { border-color:var(--pink);  background:#fcf5f6; }
+    .tier-card.ume   { border-color:#A63760; background:#ffffff; }
+    .tier-card.take  { border-color:#39BF31; background:#ffffff; }
+    .tier-card.matsu { border-color:#437D2D; background:#ffffff; }
     .tier-card h4 { font-size:13px; font-weight:700; margin-bottom:8px; }
-    .tier-card.ume h4   { color:#6aaa60; }
-    .tier-card.take h4  { color:var(--blue-d); }
-    .tier-card.matsu h4 { color:#b08090; }
+    .tier-card.ume h4   { color:#A63760; }
+    .tier-card.take h4  { color:#39BF31; }
+    .tier-card.matsu h4 { color:#437D2D; }
     .tier-card ul { list-style:none; font-size:12px; color:var(--muted); line-height:1.9; }
 
     /* ===== カテゴリタブ ===== */
@@ -236,9 +236,9 @@
     }
     .tier-filter-btn:hover { border-color:var(--blue); color:var(--blue); }
     .tier-filter-btn[data-tier="all"].active  { background:var(--blue);  border-color:var(--blue);  color:white; }
-    .tier-filter-btn[data-tier="ume"].active  { background:#f5fbf4; border-color:var(--green); color:#6aaa60; }
-    .tier-filter-btn[data-tier="take"].active { background:var(--blue-ll); border-color:var(--blue); color:var(--blue-d); }
-    .tier-filter-btn[data-tier="matsu"].active{ background:#fcf5f6; border-color:var(--pink); color:#b08090; }
+    .tier-filter-btn[data-tier="ume"].active  { background:#fce8f0; border-color:#A63760; color:#A63760; }
+    .tier-filter-btn[data-tier="take"].active { background:#eafae4; border-color:#39BF31; color:#39BF31; }
+    .tier-filter-btn[data-tier="matsu"].active{ background:#e8f2e5; border-color:#437D2D; color:#437D2D; }
 
     .gallery-grid { display:none; grid-template-columns:repeat(3,1fr); gap:14px; }
     .gallery-grid.active { display:grid; animation:formIn .3s ease; }
@@ -257,9 +257,9 @@
       font-size:10px; font-weight:700; padding:2px 8px; border-radius:100px;
       font-family:'Mulish',sans-serif; letter-spacing:.05em;
     }
-    .gallery-item[data-tier="ume"]::before   { background:#f5fbf4; color:#6aaa60; border:1px solid var(--green); }
-    .gallery-item[data-tier="take"]::before  { background:var(--blue-ll); color:var(--blue-d); border:1px solid var(--blue); }
-    .gallery-item[data-tier="matsu"]::before { background:#fcf5f6; color:#b08090; border:1px solid var(--pink); }
+    .gallery-item[data-tier="ume"]::before   { background:#fce8f0; color:#A63760; border:1px solid #A63760; }
+    .gallery-item[data-tier="take"]::before  { background:#eafae4; color:#39BF31; border:1px solid #39BF31; }
+    .gallery-item[data-tier="matsu"]::before { background:#e8f2e5; color:#437D2D; border:1px solid #437D2D; }
     .gallery-item.hidden { display:none; }
 
     /* ===== 料金早見表 ===== */
@@ -277,9 +277,9 @@
     tbody tr:hover { background:var(--blue-ll); }
     tbody td { padding:13px 16px; font-size:13px; text-align:center; }
     tbody td:first-child { text-align:left; font-weight:700; }
-    .p-ume   { color:#6aaa60; font-weight:700; font-family:'Mulish',sans-serif; }
-    .p-take  { color:var(--blue-d); font-weight:700; font-family:'Mulish',sans-serif; }
-    .p-matsu { color:#b08090; font-weight:700; font-family:'Mulish',sans-serif; }
+    .p-ume   { color:#A63760; font-weight:700; font-family:'Mulish',sans-serif; }
+    .p-take  { color:#39BF31; font-weight:700; font-family:'Mulish',sans-serif; }
+    .p-matsu { color:#437D2D; font-weight:700; font-family:'Mulish',sans-serif; }
     .tbl-note td { font-size:11px; color:var(--muted); text-align:left !important; font-weight:400 !important; padding:8px 16px 14px; }
 
     /* ===== 企業バナー ===== */
@@ -354,7 +354,7 @@
 
     /* ===== FOOTER ===== */
     footer { background:var(--blue); padding:36px; text-align:center; margin-top:80px; }
-    .footer-logo { font-family:'Mulish',sans-serif; font-weight:900; font-size:20px; color:white; margin-bottom:16px; }
+    .footer-logo { display:flex; align-items:center; justify-content:center; gap:14px; margin-bottom:20px; }
     .footer-nav { display:flex; justify-content:center; gap:20px; list-style:none; margin-bottom:16px; flex-wrap:wrap; }
     .footer-nav a { color:rgba(255,255,255,.78); text-decoration:none; font-family:'Mulish',sans-serif; font-size:11px; letter-spacing:.1em; }
     .footer-nav a:hover { color:white; }
@@ -598,6 +598,12 @@
 
     <div class="sim-card">
 
+      <!-- 共通：活動名 -->
+      <div class="sim-field" style="margin-bottom:20px; padding-bottom:20px; border-bottom:1px solid var(--border);">
+        <label style="font-size:13px; font-weight:700; letter-spacing:.08em;">あなたの活動名・ハンドルネーム <span class="opt" style="font-weight:400; color:var(--muted); font-size:11px; margin-left:4px;">（任意）</span></label>
+        <input id="user-name" type="text" placeholder="" style="margin-top:6px; padding:10px 14px; border:1.5px solid var(--border); border-radius:10px; font-family:'Noto Sans JP',sans-serif; font-size:13px; color:var(--text); background:var(--bg); outline:none; width:100%; transition:border-color .2s, box-shadow .2s;">
+      </div>
+
       <!-- イラスト -->
       <div class="sim-form active" data-form="illust">
         <p class="sim-hint">空欄のまま送ってもOK。「まだ決まっていない」も立派な依頼内容です。</p>
@@ -611,6 +617,8 @@
               <option>一枚絵（バストアップ）</option>
               <option>一枚絵（全身）</option>
               <option>立ち絵（差分なし）</option>
+              <option>アニマルぬいぐるみ</option>
+              <option>配信者用マイク</option>
               <option>その他・要相談</option>
             </select>
           </div>
@@ -621,6 +629,26 @@
               <option>梅</option>
               <option>竹</option>
               <option>松</option>
+              <option>おまかせ・相談したい</option>
+            </select>
+          </div>
+          <div class="sim-field">
+            <label>塗り方・絵柄イメージ</label>
+            <select id="il-style">
+              <option value="">選択してください</option>
+              <option>アニメ塗り</option>
+              <option>厚塗り</option>
+              <option>シンプル・線画</option>
+              <option>おまかせ・相談したい</option>
+            </select>
+          </div>
+          <div class="sim-field">
+            <label>構図イメージ</label>
+            <select id="il-pose">
+              <option value="">選択してください</option>
+              <option>バストアップ</option>
+              <option>全身</option>
+              <option>動きのある構図</option>
               <option>おまかせ・相談したい</option>
             </select>
           </div>
@@ -652,6 +680,16 @@
             </select>
           </div>
           <div class="sim-field">
+            <label>画像形式</label>
+            <select id="il-format">
+              <option value="">選択してください</option>
+              <option>PNG</option>
+              <option>透過PNG</option>
+              <option>PSD（有料）</option>
+              <option>未定・相談したい</option>
+            </select>
+          </div>
+          <div class="sim-field">
             <label>商用利用</label>
             <select id="il-comm">
               <option value="">選択してください</option>
@@ -659,6 +697,10 @@
               <option>あり（グッズ販売等）</option>
               <option>未定・相談したい</option>
             </select>
+          </div>
+          <div class="sim-field">
+            <label>ご予算 <span class="opt">（任意）</span></label>
+            <input id="il-budget" type="text" placeholder="例：10,000円前後、相談したい">
           </div>
           <div class="sim-field">
             <label>希望納期 <span class="opt">（任意）</span></label>
@@ -716,6 +758,20 @@
             </select>
           </div>
           <div class="sim-field">
+            <label>雰囲気・スタイル</label>
+            <select id="de-style">
+              <option value="">選択してください</option>
+              <option>可愛い・ゆめかわ</option>
+              <option>かっこいい・スタイリッシュ</option>
+              <option>シンプル・すっきり</option>
+              <option>高級感・きれいめ</option>
+              <option>ポップ・にぎやか</option>
+              <option>和風・レトロ</option>
+              <option>ネオン・サイバー</option>
+              <option>おまかせ・相談したい</option>
+            </select>
+          </div>
+          <div class="sim-field">
             <label>用途・プラットフォーム</label>
             <select id="de-platform">
               <option value="">選択してください</option>
@@ -734,8 +790,23 @@
             </select>
           </div>
           <div class="sim-field">
+            <label>画像形式</label>
+            <select id="de-format">
+              <option value="">選択してください</option>
+              <option>PNG</option>
+              <option>透過PNG</option>
+              <option>PSD（有料）</option>
+              <option>AI（有料）</option>
+              <option>未定・相談したい</option>
+            </select>
+          </div>
+          <div class="sim-field">
             <label>カラーイメージ <span class="opt">（任意）</span></label>
             <input id="de-color" type="text" placeholder="例：パステルブルー系・ダーク・モノクロ">
+          </div>
+          <div class="sim-field">
+            <label>ご予算 <span class="opt">（任意）</span></label>
+            <input id="de-budget" type="text" placeholder="例：5,000円前後、相談したい">
           </div>
           <div class="sim-field">
             <label>希望納期 <span class="opt">（任意）</span></label>
@@ -747,7 +818,7 @@
           </div>
           <div class="sim-field full">
             <label>その他・ご要望 <span class="opt">（任意）</span></label>
-            <textarea id="de-note" rows="3" placeholder="雰囲気・サイズ要件・使用素材など。空欄でも大丈夫！"></textarea>
+            <textarea id="de-note" rows="3" placeholder="ロゴの場合：入れたい名前・フォントイメージ等。その他：サイズ・補足など。空欄でも大丈夫！"></textarea>
           </div>
         </div>
       </div>
@@ -777,6 +848,10 @@
               <option>松（ハイグレード）</option>
               <option>おまかせ・相談したい</option>
             </select>
+          </div>
+          <div class="sim-field">
+            <label>ご予算 <span class="opt">（任意）</span></label>
+            <input id="ot-budget" type="text" placeholder="例：30,000円前後、相談したい">
           </div>
           <div class="sim-field">
             <label>希望納期 <span class="opt">（任意）</span></label>
@@ -810,7 +885,7 @@
           <a href="https://coconala.com/" target="_blank" class="popup-item" onclick="onSelect()">
             <span class="popup-icon coconala"><img src="coconala.png" alt="ココナラ" style="width:100%;height:100%;object-fit:contain;"></span>ココナラ
           </a>
-          <a href="https://twitter.com/creator_kanon_" target="_blank" class="popup-item" onclick="onSelect()">
+          <a href="https://twitter.com/creator_kanon" target="_blank" class="popup-item" onclick="onSelect()">
             <span class="popup-icon twitter">𝕏</span>X (Twitter) DM
           </a>
           <button class="popup-close" onclick="closePopup()">閉じる ×</button>
@@ -956,7 +1031,7 @@
   <a href="https://coconala.com/" target="_blank" class="mobile-item" onclick="onSelect()">
     <span class="mobile-icon coconala"><img src="coconala.png" alt="ココナラ" style="width:100%;height:100%;object-fit:contain;"></span>ココナラ
   </a>
-  <a href="https://twitter.com/creator_kanon_" target="_blank" class="mobile-item" onclick="onSelect()">
+  <a href="https://twitter.com/creator_kanon" target="_blank" class="mobile-item" onclick="onSelect()">
     <span class="mobile-icon twitter" style="background:#000;color:#fff;font-family:'Mulish',sans-serif;font-weight:900;font-size:12px;">𝕏</span>X (Twitter) DM
   </a>
   <button class="popup-close" onclick="closePopup()" style="margin-top:16px;">閉じる ×</button>
@@ -997,7 +1072,13 @@
 </div>
 
 <footer>
-  <div class="footer-logo">Pastel Bunny</div>
+  <div class="footer-logo">
+    <img src="ロゴ.webp" alt="Pastel Bunny" class="nav-logo-img">
+    <div>
+      <span class="en">illust-design</span>
+      <span class="ja">Pastel Bunny</span>
+    </div>
+  </div>
   <ul class="footer-nav">
     <li><a href="#">HOME</a></li>
     <li><a href="#">ABOUT</a></li>
@@ -1073,33 +1154,82 @@
   }
 
   /* ===== コピーテキスト生成 ===== */
-  function val(id) {
+  function val(id, fallback) {
     const el = document.getElementById(id);
-    return el ? (el.value.trim() || '（未入力）') : '（未入力）';
+    if (!el) return fallback ?? '（未入力）';
+    const v = el.value.trim();
+    if (v) return v;
+    if (fallback !== undefined) return fallback;
+    return el.tagName === 'SELECT' ? '相談させてください' : '特にございません';
   }
   function buildText() {
-    if (currentCat === 'illust') return `【依頼内容】${val('il-type')}
-【料金帯希望】${val('il-tier')}
-【キャラクター数】${val('il-char')}
-【背景】${val('il-bg')}
-【差分】${val('il-diff')}
-【商用利用】${val('il-comm')}
-【希望納期】${val('il-deadline')}
-【参考画像】${val('il-ref')}
-【その他・ご要望】${val('il-note')}`;
-    if (currentCat === 'design') return `【依頼内容】${val('de-type')}
-【料金帯希望】${val('de-tier')}
-【用途・プラットフォーム】${val('de-platform')}
-【商用利用】${val('de-comm')}
-【カラーイメージ】${val('de-color')}
-【希望納期】${val('de-deadline')}
-【参考画像】${val('de-ref')}
-【その他・ご要望】${val('de-note')}`;
-    return `【依頼内容】${val('ot-type')}
-【料金帯希望】${val('ot-tier')}
-【希望納期】${val('ot-deadline')}
-【参考画像】${val('ot-ref')}
-【セット内容・ご要望】${val('ot-note')}`;
+    const name = val('user-name', '○○');
+    if (currentCat === 'illust') return `【挨拶】Kanon様
+はじめまして、${name}と申します。
+今回はイラスト制作の依頼をお願いしたく連絡させていただきました。
+
+【内容】
+・制作物：${val('il-type')}
+・料金帯希望：${val('il-tier')}
+・塗り方・絵柄：${val('il-style')}
+・構図イメージ：${val('il-pose')}
+・キャラクター数：${val('il-char')}
+・背景：${val('il-bg')}
+・差分：${val('il-diff')}
+・画像形式：${val('il-format')}
+・商用利用：${val('il-comm')}
+・ご予算：${val('il-budget')}
+・希望納期：${val('il-deadline')}
+・参考画像：${val('il-ref')}
+
+【その他・ご要望】
+${val('il-note')}
+
+【最後】上記内容でお見積りと納期の算出をお願いできますでしょうか。
+不足している情報がありましたらご教授いただけますと幸いです。
+
+【著名】${name}`;
+    if (currentCat === 'design') return `【挨拶】Kanon様
+はじめまして、${name}と申します。
+今回はデザイン制作の依頼をお願いしたく連絡させていただきました。
+
+【内容】
+・制作物：${val('de-type')}
+・料金帯希望：${val('de-tier')}
+・雰囲気・スタイル：${val('de-style')}
+・用途・プラットフォーム：${val('de-platform')}
+・商用利用：${val('de-comm')}
+・画像形式：${val('de-format')}
+・カラーイメージ：${val('de-color')}
+・ご予算：${val('de-budget')}
+・希望納期：${val('de-deadline')}
+・参考画像：${val('de-ref')}
+
+【その他・ご要望】
+${val('de-note')}
+
+【最後】上記内容でお見積りと納期の算出をお願いできますでしょうか。
+不足している情報がありましたらご教授いただけますと幸いです。
+
+【著名】${name}`;
+    return `【挨拶】Kanon様
+はじめまして、${name}と申します。
+今回はセット・その他制作の依頼をお願いしたく連絡させていただきました。
+
+【内容】
+・制作物：${val('ot-type')}
+・料金帯希望：${val('ot-tier')}
+・ご予算：${val('ot-budget')}
+・希望納期：${val('ot-deadline')}
+・参考画像：${val('ot-ref')}
+
+【ご要望・セット内容】
+${val('ot-note')}
+
+【最後】上記内容でお見積りと納期の算出をお願いできますでしょうか。
+不足している情報がありましたらご教授いただけますと幸いです。
+
+【著名】${name}`;
   }
 
   function doCopy() {
