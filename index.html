@@ -404,6 +404,7 @@
     /* ===== 料金早見表 ===== */
     .price-wrap { display:none; overflow-x:auto; }
     .price-wrap.active { display:block; animation:formIn .3s ease; }
+    .price-wrap table { min-width:540px; }
     table { width:100%; border-collapse:collapse; background:white; border-radius:var(--r-lg); overflow:hidden; box-shadow:var(--shadow); }
     thead th {
       padding:14px 16px; text-align:center;
@@ -678,6 +679,7 @@
       .tier-grid { grid-template-columns:1fr; }
       .gallery-grid { grid-template-columns:repeat(2,1fr); }
       .contact-popup { display:none !important; }
+      .item-badge-pill { white-space:normal; word-break:keep-all; }
     }
     @media (min-width:681px) {
       .popup-overlay, .contact-popup-mobile { display:none !important; }
