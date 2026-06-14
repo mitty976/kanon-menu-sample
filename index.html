@@ -405,6 +405,7 @@
     .price-wrap { display:none; overflow-x:auto; }
     .price-wrap.active { display:block; animation:formIn .3s ease; }
     .price-wrap table { min-width:380px; }
+    [data-table="design"] table { min-width:540px; }
     table { width:100%; border-collapse:collapse; background:white; border-radius:var(--r-lg); overflow:hidden; box-shadow:var(--shadow); }
     thead th {
       padding:14px 16px; text-align:center;
@@ -429,6 +430,18 @@
     .price-tab-btn.active { background:var(--blue); color:white; }
     .price-table-flat { margin-top:14px; }
     .price-note { font-size:11px; color:var(--muted); margin:10px 4px 0; }
+    .scroll-hint { display:none; }
+    .price-wrap { position:relative; }
+    .scroll-overlay {
+      display:none;
+      position:absolute; top:0; left:0; right:0; bottom:0;
+      background:rgba(150,191,221,0.55);
+      align-items:center; justify-content:center;
+      font-size:14px; font-weight:700; color:white;
+      letter-spacing:.06em; z-index:5;
+      cursor:pointer;
+    }
+    @media (max-width:680px) { .scroll-overlay { display:flex; } }
     .td-spacer { display:block; height:12px; overflow:hidden; color:transparent; user-select:none; pointer-events:none; }
     .td-sub { padding-left:1.6em; font-size:13px; color:var(--muted); }
 
@@ -2607,6 +2620,7 @@
 
     <!-- デザイン -->
     <div class="price-wrap" data-table="design">
+      <div class="scroll-overlay" id="design-scroll-overlay">右にスライドして確認 →</div>
       <!-- ロゴ：梅・竹・松・松HiEnd -->
       <table>
         <thead><tr><th>ロゴ</th><th>梅（ライトプラン）</th><th>竹（スタンダード）</th><th>松（ハイグレード）</th><th>松（ハイエンド）</th></tr></thead>
@@ -2842,6 +2856,16 @@
     document.querySelectorAll('.price-wrap').forEach(w => w.classList.remove('active'));
     document.querySelector(`.price-wrap[data-table="${price}"]`).classList.add('active');
   }
+
+  /* デザインタブ：スクロールまたはタップでオーバーレイを消す */
+  (function() {
+    const wrap = document.querySelector('.price-wrap[data-table="design"]');
+    const overlay = document.getElementById('design-scroll-overlay');
+    if (!wrap || !overlay) return;
+    const hide = () => { overlay.style.display = 'none'; };
+    wrap.addEventListener('scroll', hide, { once: true });
+    overlay.addEventListener('click', hide, { once: true });
+  })();
 
   /* ===== WORKSタブ切り替え ===== */
   function switchWorksTab(btn) {
