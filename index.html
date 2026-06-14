@@ -3204,8 +3204,8 @@ ${val('ot-note')}
   document.querySelectorAll('.fade-in').forEach(el => io.observe(el));
 
   /* ===== WORKSプレビュー展開（全パネル共通：1枚表示→さらに見る） ===== */
-  (function initWORKSPreview() {
-    if (window.innerWidth > 680) return;
+  /* ===== デザインWORKSプレビュー展開 ===== */
+  (function initDesignPreview() {
     const moreHtml  = count => `さらに見る（+${count}枚）<span class="preview-arrow">▼</span>`;
     const closeHtml = () => `折りたたむ ↑`;
 
@@ -3214,25 +3214,118 @@ ${val('ot-note')}
       btn.className = 'preview-more-btn';
       btn.innerHTML = moreHtml(count);
       let open = false;
-      btn.onclick = () => {
-        open = !open;
-        open ? onExpand() : onCollapse();
-        btn.innerHTML = open ? closeHtml() : moreHtml(count);
-      };
+      btn.onclick = () => { open = !open; open ? onExpand() : onCollapse(); btn.innerHTML = open ? closeHtml() : moreHtml(count); };
       sg.appendChild(btn);
     }
 
-    document.querySelectorAll('.works-sub-group').forEach(sg => {
-      const items = Array.from(sg.querySelectorAll('.gallery-item'));
-      if (items.length <= 1) return;
-      const hidden = items.length - 1;
-      items.slice(1).forEach(el => el.classList.add('preview-hidden'));
-      makeBtn(sg, hidden,
-        () => items.slice(1).forEach(el => el.classList.remove('preview-hidden')),
-        () => { items.slice(1).forEach(el => el.classList.add('preview-hidden')); sg.scrollIntoView({ behavior:'smooth', block:'nearest' }); }
-      );
+    document.querySelectorAll('[data-works="design"] .works-sub-group').forEach(sg => {
+      const tierGroups = Array.from(sg.querySelectorAll('.tier-group'));
+      if (tierGroups.length === 0) return;
+      if (tierGroups.length === 1) {
+        const items = Array.from(tierGroups[0].querySelectorAll('.gallery-item'));
+        if (items.length <= 3) return;
+        items.slice(3).forEach(el => el.classList.add('preview-hidden'));
+        makeBtn(sg, items.length - 3, () => items.slice(3).forEach(el => el.classList.remove('preview-hidden')), () => { items.slice(3).forEach(el => el.classList.add('preview-hidden')); sg.scrollIntoView({ behavior:'smooth', block:'nearest' }); });
+      } else {
+        sg.classList.add('preview-state');
+        const sgTitle = sg.querySelector('.works-sub-title')?.textContent.trim();
+        if (sgTitle === 'ネームロゴ') sg.classList.add('is-name-logo');
+        let totalHidden = 0;
+        if (tierGroups.length === 2) {
+          const tg1 = tierGroups[1]; const tg1Imgs = tg1.querySelector('.tier-group-images');
+          Array.from(tierGroups[0].querySelectorAll('.gallery-item')).slice(1).forEach(el => { el.classList.add('preview-hidden'); totalHidden++; });
+          Array.from(tg1.querySelectorAll('.gallery-item')).slice(2).forEach(el => { el.classList.add('preview-hidden'); totalHidden++; });
+          tg1.style.flex = '0 0 calc((100% - 10px) * 2 / 3)';
+          if (tg1Imgs) tg1Imgs.style.gridTemplateColumns = '1fr 1fr';
+          if (totalHidden === 0) return;
+          makeBtn(sg, totalHidden,
+            () => { sg.classList.remove('preview-state'); tg1.style.flex = ''; if (tg1Imgs) tg1Imgs.style.gridTemplateColumns = ''; sg.querySelectorAll('.gallery-item.preview-hidden').forEach(el => el.classList.remove('preview-hidden')); },
+            () => { sg.querySelectorAll('.gallery-item').forEach(el => el.classList.remove('preview-hidden')); Array.from(tierGroups[0].querySelectorAll('.gallery-item')).slice(1).forEach(el => el.classList.add('preview-hidden')); Array.from(tg1.querySelectorAll('.gallery-item')).slice(2).forEach(el => el.classList.add('preview-hidden')); sg.classList.add('preview-state'); tg1.style.flex = '0 0 calc((100% - 10px) * 2 / 3)'; if (tg1Imgs) tg1Imgs.style.gridTemplateColumns = '1fr 1fr'; sg.scrollIntoView({ behavior:'smooth', block:'nearest' }); }
+          );
+        } else {
+          tierGroups.forEach(tg => { Array.from(tg.querySelectorAll('.gallery-item')).slice(1).forEach(el => { el.classList.add('preview-hidden'); totalHidden++; }); });
+          if (totalHidden === 0) return;
+          const totalItems = sg.querySelectorAll('.gallery-item').length;
+          if (totalItems <= 3) { sg.querySelectorAll('.gallery-item.preview-hidden').forEach(el => el.classList.remove('preview-hidden')); sg.classList.remove('preview-state'); return; }
+          makeBtn(sg, totalHidden, () => { sg.classList.remove('preview-state'); sg.querySelectorAll('.gallery-item.preview-hidden').forEach(el => el.classList.remove('preview-hidden')); }, () => { tierGroups.forEach(tg => Array.from(tg.querySelectorAll('.gallery-item')).slice(1).forEach(el => el.classList.add('preview-hidden'))); sg.classList.add('preview-state'); sg.scrollIntoView({ behavior:'smooth', block:'nearest' }); });
+        }
+      }
     });
   })();
+
+  /* ===== イラストWORKSプレビュー展開 ===== */
+  (function initIllustPreview() {
+    const moreHtml  = count => `さらに見る（+${count}枚）<span class="preview-arrow">▼</span>`;
+    const closeHtml = () => `折りたたむ ↑`;
+
+    function makeBtn(sg, count, onExpand, onCollapse) {
+      const btn = document.createElement('button');
+      btn.className = 'preview-more-btn';
+      btn.innerHTML = moreHtml(count);
+      let open = false;
+      btn.onclick = () => { open = !open; open ? onExpand() : onCollapse(); btn.innerHTML = open ? closeHtml() : moreHtml(count); };
+      sg.appendChild(btn);
+    }
+
+    document.querySelectorAll('[data-works="illust"] .works-sub-group').forEach(sg => {
+      const tierGroups = Array.from(sg.querySelectorAll('.tier-group'));
+      if (tierGroups.length === 0) {
+        const items = Array.from(sg.querySelectorAll('.gallery-item'));
+        if (items.length <= 3) return;
+        items.slice(3).forEach(el => el.classList.add('preview-hidden'));
+        makeBtn(sg, items.length - 3, () => items.slice(3).forEach(el => el.classList.remove('preview-hidden')), () => { items.slice(3).forEach(el => el.classList.add('preview-hidden')); sg.scrollIntoView({ behavior:'smooth', block:'nearest' }); });
+        return;
+      }
+      if (tierGroups.length === 1) {
+        const items = Array.from(tierGroups[0].querySelectorAll('.gallery-item'));
+        if (items.length <= 3) return;
+        items.slice(3).forEach(el => el.classList.add('preview-hidden'));
+        makeBtn(sg, items.length - 3, () => items.slice(3).forEach(el => el.classList.remove('preview-hidden')), () => { items.slice(3).forEach(el => el.classList.add('preview-hidden')); sg.scrollIntoView({ behavior:'smooth', block:'nearest' }); });
+        return;
+      }
+      sg.classList.add('preview-state');
+      let totalHidden = 0;
+      if (tierGroups.length === 2) {
+        const tg1 = tierGroups[1]; const tg1Imgs = tg1.querySelector('.tier-group-images');
+        Array.from(tierGroups[0].querySelectorAll('.gallery-item')).slice(1).forEach(el => { el.classList.add('preview-hidden'); totalHidden++; });
+        Array.from(tg1.querySelectorAll('.gallery-item')).slice(2).forEach(el => { el.classList.add('preview-hidden'); totalHidden++; });
+        tg1.style.flex = '0 0 calc((100% - 10px) * 2 / 3)';
+        if (tg1Imgs) tg1Imgs.style.gridTemplateColumns = '1fr 1fr';
+        if (totalHidden === 0) return;
+        makeBtn(sg, totalHidden,
+          () => { sg.classList.remove('preview-state'); tg1.style.flex = ''; if (tg1Imgs) tg1Imgs.style.gridTemplateColumns = ''; sg.querySelectorAll('.gallery-item.preview-hidden').forEach(el => el.classList.remove('preview-hidden')); },
+          () => { sg.querySelectorAll('.gallery-item').forEach(el => el.classList.remove('preview-hidden')); Array.from(tierGroups[0].querySelectorAll('.gallery-item')).slice(1).forEach(el => el.classList.add('preview-hidden')); Array.from(tg1.querySelectorAll('.gallery-item')).slice(2).forEach(el => el.classList.add('preview-hidden')); sg.classList.add('preview-state'); tg1.style.flex = '0 0 calc((100% - 10px) * 2 / 3)'; if (tg1Imgs) tg1Imgs.style.gridTemplateColumns = '1fr 1fr'; sg.scrollIntoView({ behavior:'smooth', block:'nearest' }); }
+        );
+      } else {
+        tierGroups.forEach(tg => { Array.from(tg.querySelectorAll('.gallery-item')).slice(1).forEach(el => { el.classList.add('preview-hidden'); totalHidden++; }); });
+        if (totalHidden === 0) return;
+        const totalItems = sg.querySelectorAll('.gallery-item').length;
+        if (totalItems <= 3) { sg.querySelectorAll('.gallery-item.preview-hidden').forEach(el => el.classList.remove('preview-hidden')); sg.classList.remove('preview-state'); return; }
+        makeBtn(sg, totalHidden, () => { sg.classList.remove('preview-state'); sg.querySelectorAll('.gallery-item.preview-hidden').forEach(el => el.classList.remove('preview-hidden')); }, () => { tierGroups.forEach(tg => Array.from(tg.querySelectorAll('.gallery-item')).slice(1).forEach(el => el.classList.add('preview-hidden'))); sg.classList.add('preview-state'); sg.scrollIntoView({ behavior:'smooth', block:'nearest' }); });
+      }
+    });
+  })();
+
+  /* ===== スマホのみ：works-sub-group全体を1枚に絞る ===== */
+  if (window.innerWidth <= 680) {
+    document.querySelectorAll('.works-sub-group').forEach(sg => {
+      const items = Array.from(sg.querySelectorAll('.gallery-item:not(.preview-hidden)'));
+      if (items.length <= 1) return;
+      items.slice(1).forEach(el => el.classList.add('preview-hidden'));
+      const btn = sg.querySelector('.preview-more-btn');
+      if (btn) {
+        const total = sg.querySelectorAll('.gallery-item').length - 1;
+        btn.innerHTML = `さらに見る（+${total}枚）<span class="preview-arrow">▼</span>`;
+        const allItems = Array.from(sg.querySelectorAll('.gallery-item'));
+        let open = false;
+        btn.onclick = () => {
+          open = !open;
+          allItems.slice(1).forEach(el => el.classList.toggle('preview-hidden', !open));
+          btn.innerHTML = open ? '折りたたむ ↑' : `さらに見る（+${total}枚）<span class="preview-arrow">▼</span>`;
+        };
+      }
+    });
+  }
 
   /* ===== 制作実績セクション全体：右クリック保存防止 ===== */
   document.getElementById('works')?.addEventListener('contextmenu', e => {
