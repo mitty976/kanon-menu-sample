@@ -407,20 +407,22 @@
     .price-wrap table { min-width:540px; }
     table { width:100%; border-collapse:collapse; background:white; border-radius:var(--r-lg); overflow:hidden; box-shadow:var(--shadow); }
     thead th {
-      padding:8px 8px; text-align:center;
+      padding:14px 16px; text-align:center;
       font-family:'Mulish',sans-serif; font-size:12px; font-weight:900; letter-spacing:.1em;
       background:var(--blue); color:white;
     }
     thead th:first-child { text-align:left; }
+    thead th:not(:first-child) { padding-left:4px; }
+    tbody td:not(:first-child) { padding-left:4px; }
     tbody tr { border-bottom:1px solid var(--border); }
     tbody tr:last-child { border-bottom:none; }
     tbody tr:hover { background:var(--blue-ll); }
-    tbody td { padding:8px 8px; font-size:15px; text-align:center; vertical-align:middle; }
+    tbody td { padding:13px 16px; font-size:15px; text-align:center; vertical-align:middle; }
     tbody td:first-child { text-align:left; font-weight:700; }
     .p-ume   { color:#A63760; font-weight:700; font-family:'Mulish',sans-serif; }
     .p-take  { color:#39BF31; font-weight:700; font-family:'Mulish',sans-serif; }
     .p-matsu { color:#437D2D; font-weight:700; font-family:'Mulish',sans-serif; }
-    .tbl-note td { font-size:13px; color:var(--muted); text-align:left !important; font-weight:400 !important; padding:8px 8px 14px; }
+    .tbl-note td { font-size:13px; color:var(--muted); text-align:left !important; font-weight:400 !important; padding:8px 16px 14px; }
     /* 価格表タブ */
     .price-tabs { display:flex; gap:10px; margin-bottom:20px; }
     .price-tab-btn { flex:1; padding:10px 16px; border-radius:100px; border:2px solid var(--blue); background:transparent; color:var(--blue-d); font-family:'Noto Sans JP',sans-serif; font-size:14px; font-weight:700; letter-spacing:.06em; transition:background .2s,color .2s; cursor:pointer; }
