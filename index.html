@@ -404,7 +404,7 @@
     /* ===== 料金早見表 ===== */
     .price-wrap { display:none; overflow-x:auto; }
     .price-wrap.active { display:block; animation:formIn .3s ease; }
-    .price-wrap table { min-width:540px; }
+    .price-wrap table { min-width:380px; }
     table { width:100%; border-collapse:collapse; background:white; border-radius:var(--r-lg); overflow:hidden; box-shadow:var(--shadow); }
     thead th {
       padding:14px 16px; text-align:center;
@@ -412,8 +412,8 @@
       background:var(--blue); color:white;
     }
     thead th:first-child { text-align:left; }
-    thead th:not(:first-child) { padding-left:4px; }
-    tbody td:not(:first-child) { padding-left:4px; }
+    thead th:not(:first-child) { padding-left:0; }
+    tbody td:not(:first-child) { padding-left:0; }
     tbody tr { border-bottom:1px solid var(--border); }
     tbody tr:last-child { border-bottom:none; }
     tbody tr:hover { background:var(--blue-ll); }
