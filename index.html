@@ -404,6 +404,8 @@
     /* ===== 料金早見表 ===== */
     .price-wrap { display:none; overflow-x:auto; }
     .price-wrap.active { display:block; animation:formIn .3s ease; }
+    .price-wrap table { min-width:380px; }
+    [data-table="design"] table { min-width:540px; }
     table { width:100%; border-collapse:collapse; background:white; border-radius:var(--r-lg); overflow:hidden; box-shadow:var(--shadow); }
     thead th {
       padding:14px 16px; text-align:center;
@@ -411,6 +413,8 @@
       background:var(--blue); color:white;
     }
     thead th:first-child { text-align:left; }
+    thead th:not(:first-child) { padding-left:0; }
+    tbody td:not(:first-child) { padding-left:0; }
     tbody tr { border-bottom:1px solid var(--border); }
     tbody tr:last-child { border-bottom:none; }
     tbody tr:hover { background:var(--blue-ll); }
@@ -426,6 +430,28 @@
     .price-tab-btn.active { background:var(--blue); color:white; }
     .price-table-flat { margin-top:14px; }
     .price-note { font-size:11px; color:var(--muted); margin:10px 4px 0; }
+    .scroll-hint { display:none; }
+    .price-wrap { position:relative; }
+    .scroll-overlay {
+      display:none;
+      position:absolute; top:0; left:0; right:0; bottom:0;
+      background:rgba(150,191,221,0.6);
+      flex-direction:column; align-items:center; justify-content:center;
+      gap:6px; z-index:5; cursor:pointer;
+    }
+    @media (max-width:680px) { .scroll-overlay { display:flex; } }
+    .scroll-overlay-arrow {
+      font-size:40px; color:white; line-height:1;
+      animation:swipe-right 1.1s ease-in-out infinite;
+    }
+    .scroll-overlay-text {
+      font-size:13px; font-weight:700; color:white; letter-spacing:.06em;
+    }
+    @keyframes swipe-right {
+      0%   { transform:translateX(-10px); opacity:.3; }
+      50%  { transform:translateX(4px);  opacity:1; }
+      100% { transform:translateX(14px); opacity:.3; }
+    }
     .td-spacer { display:block; height:12px; overflow:hidden; color:transparent; user-select:none; pointer-events:none; }
     .td-sub { padding-left:1.6em; font-size:13px; color:var(--muted); }
 
@@ -676,11 +702,13 @@
       .sim-card { padding:20px; }
       .sim-grid { grid-template-columns:1fr; }
       .tier-grid { grid-template-columns:1fr; }
-      .gallery-grid { grid-template-columns:repeat(2,1fr); }
-      .contact-popup { display:none !important; }
-      .works-sub-group.preview-state { display:block !important; }
-      .works-sub-group.preview-state .tier-group { flex:none !important; width:100% !important; }
+      .gallery-grid { grid-template-columns:1fr; }
       .tier-group-images { grid-template-columns:1fr !important; }
+      .works-sub-group.preview-state { display:block !important; }
+      .works-sub-group .tier-group { flex:none !important; width:100% !important; }
+      .contact-popup { display:none !important; }
+      .item-badge-pill { white-space:normal; word-break:keep-all; }
+      .sel-btn { flex:0 0 100%; }
     }
     @media (min-width:681px) {
       .popup-overlay, .contact-popup-mobile { display:none !important; }
@@ -788,6 +816,236 @@
     }
     .pagetop-btn.visible { opacity:1; pointer-events:auto; }
     .pagetop-btn:hover { background:#7aadc9; transition:background .2s; }
+
+    /* ===== ご依頼状況カード ===== */
+    /* PC：左端から振り子スライドイン */
+    .status-panel {
+      position:fixed; left:16px; top:50%; transform:translateY(-50%) translateX(0);
+      width:240px; z-index:900;
+      animation:status-swing-x .84s ease-in-out .4s both;
+    }
+    @keyframes status-swing-x {
+      from  { transform:translateY(-50%) translateX(calc(-100% - 16px)); }
+      40%   { transform:translateY(-50%) translateX(10%); }
+      70%   { transform:translateY(-50%) translateX(-5%); }
+      to    { transform:translateY(-50%) translateX(0); }
+    }
+    .status-panel__shake {
+      animation:status-shake .84s ease-in-out .4s both;
+    }
+    @keyframes status-shake {
+      from { transform:rotate(-10deg); }
+      40%  { transform:rotate(4deg); }
+      70%  { transform:rotate(-2deg); }
+      to   { transform:rotate(0deg); }
+    }
+    .status-card {
+      background:linear-gradient(160deg,rgba(150,191,221,.18) 0%,#fff 100%);
+      border:1.5px solid var(--blue); border-radius:16px;
+      padding:14px 14px 12px; box-shadow:0 8px 24px rgba(150,191,221,.3);
+    }
+    .status-card-title { font-size:12px; font-weight:700; color:var(--muted); letter-spacing:.08em; margin-bottom:8px; text-align:center; }
+    .status-card-badge { font-size:18px; font-weight:900; color:#ff4da6; margin-bottom:10px; text-align:center; }
+    .status-card-badge .dot { font-size:12px; margin-left:4px; animation:dot-blink 1.4s ease-in-out infinite; }
+    .status-mobile-label { display:none; }
+    @keyframes dot-blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+    .status-card-icon { display:block; width:56px; height:56px; object-fit:contain; margin:0 auto 12px; }
+    .status-card-deadline { font-size:13px; font-weight:700; text-align:center; margin-bottom:4px; }
+    .status-card-note { font-size:11px; color:var(--muted); line-height:1.7; text-align:center; margin-bottom:10px; }
+    .status-avail-label { font-size:12px; font-weight:700; color:var(--pink,#e57aa0); text-align:center; margin-bottom:6px; }
+    .status-avail-grid { display:flex; justify-content:space-around; font-size:14px; font-weight:700; text-align:center; margin-bottom:14px; }
+    .status-avail-grid span { display:block; font-size:11px; color:var(--muted); font-weight:400; margin-bottom:2px; }
+    .status-cta-btn {
+      display:block; padding:10px 10px; text-align:center;
+      background:var(--blue-ll); border:1.5px solid var(--blue); border-radius:100px;
+      font-size:12px; font-weight:700; color:var(--blue-d); text-decoration:none;
+      position:relative; overflow:hidden;
+    }
+    .status-cta-btn::before {
+      content:'';
+      position:absolute; top:0; left:-100%;
+      width:60%; height:100%;
+      background:linear-gradient(to right, transparent, rgba(255,255,255,.8), transparent);
+      transform:skewX(-20deg);
+      animation:shimmer 2s ease-in-out infinite;
+    }
+    @keyframes shimmer {
+      0%   { left:-100%; }
+      100% { left:150%; }
+    }
+    .status-cta-btn:hover { background:rgba(150,191,221,.28); }
+    .status-cta-btn:hover::before { animation-play-state:paused; }
+
+    /* スマホ：下からスライドアップ・文言短縮 */
+    @media (max-width:1199px) {
+      .status-panel {
+        left:0; right:0; bottom:0; top:auto; width:100%;
+        transform:none;
+        animation:status-slide-up .5s ease-out .3s both;
+        border-radius:16px 16px 0 0;
+        overflow:hidden;
+      }
+      @keyframes status-slide-up {
+        from { transform:translateY(100%); }
+        to   { transform:translateY(0); }
+      }
+      .status-panel__shake { animation:none; }
+      .status-card {
+        border-radius:16px 16px 0 0; border-bottom:none;
+        display:flex; align-items:center; gap:10px; padding:10px 16px;
+        background:rgba(220,236,247,.50);
+      }
+      .status-card-icon { width:36px; height:36px; margin:0; flex-shrink:0; }
+      .status-card-title { display:none; }
+      .status-card-note  { display:none; }
+      .status-avail-label { display:none; }
+      .status-avail-grid  { display:none; }
+      .status-mobile-label { display:inline; font-size:12px; font-weight:700; color:#333; }
+      .status-card-badge { font-size:15px; margin:0 0 2px; text-align:left; color:var(--pink); }
+      .status-card-deadline { font-size:13px; margin:0; text-align:left; }
+      .status-card-body { flex:1; min-width:0; }
+      .status-cta-btn { white-space:nowrap; padding:10px 16px; font-size:13px; flex-shrink:0; }
+    }
+
+    /* ===== PAGE TOP ===== */
+    .pagetop-btn {
+      position:fixed; right:0; bottom:80px;
+      writing-mode:vertical-rl; text-orientation:mixed;
+      background:#96bfdd; color:#fff;
+      border:none; border-radius:100px 0 0 100px; padding:20px 10px;
+      font-size:13px; font-weight:700; letter-spacing:.12em; cursor:pointer;
+      z-index:1000; opacity:0; pointer-events:none; transition:opacity .3s;
+      line-height:1;
+    }
+    .pagetop-btn.visible { opacity:1; pointer-events:auto; }
+    .pagetop-btn:hover { background:#7aadc9; transition:background .2s; }
+
+    /* ===== 上位タブ（金額シミュレーター / ご依頼シミュレーター） ===== */
+    .main-tab-wrap { margin-bottom:8px; }
+    .main-tabs { display:flex; gap:10px; margin:0 0 20px; flex-wrap:wrap; justify-content:center; }
+    .main-tab-btn {
+      display:flex; align-items:center; gap:8px;
+      padding:12px 28px; border:2px solid var(--border);
+      background:white; color:var(--muted);
+      font-family:'Noto Sans JP',sans-serif; font-size:15px; font-weight:700;
+      cursor:pointer; transition:background .2s, color .2s, border-color .2s, box-shadow .2s;
+      border-radius:100px; white-space:nowrap;
+    }
+    .main-tab-btn:hover { border-color:var(--blue); color:var(--blue-d); }
+    .main-tab-btn.active { background:var(--blue); color:white; border-color:var(--blue); box-shadow:0 4px 14px rgba(150,191,221,.4); }
+    .main-tab-btn .tab-icon { font-size:16px; line-height:1; }
+    .main-tab-btn .tab-sub { display:none; }
+    .main-panel { display:none; background:white; border-radius:var(--r-lg); box-shadow:var(--shadow); }
+    .main-panel.active { display:block; }
+    .main-panel-inner { padding:28px 24px; }
+
+    /* ===== ステップ表示（パネル外・独立・センター） ===== */
+    .sim-steps {
+      display:flex; align-items:center; justify-content:center;
+      flex-wrap:wrap; gap:6px; margin:0 0 20px;
+    }
+    .sim-step {
+      display:flex; align-items:center; gap:8px;
+      background:white; border:2px solid var(--blue); border-radius:100px;
+      padding:7px 16px; white-space:nowrap;
+    }
+    .sim-step .step-num {
+      width:22px; height:22px; border-radius:50%; background:var(--blue); color:white;
+      font-family:'Mulish',sans-serif; font-size:12px; font-weight:700;
+      display:flex; align-items:center; justify-content:center; flex-shrink:0;
+    }
+    .sim-step .step-text { font-size:13px; font-weight:700; color:var(--blue-d); }
+    .sim-step-arrow { color:var(--blue-d); font-size:22px; line-height:1; opacity:.5; margin:0 6px; }
+
+    /* ===== 金額シミュレーター ===== */
+    .psim-tabs { display:flex; gap:10px; margin-bottom:20px; }
+    .psim-tab-btn { flex:1; padding:10px 14px; border-radius:100px; border:2px solid var(--blue); background:transparent; color:var(--blue-d); font-family:'Noto Sans JP',sans-serif; font-size:14px; font-weight:700; cursor:pointer; transition:background .2s, color .2s; }
+    .psim-tab-btn.active { background:var(--blue); color:white; }
+    .psim-form { display:none; }
+    .psim-form.active { display:block; }
+    .psim-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+    @media(max-width:540px){ .psim-grid { grid-template-columns:1fr; } }
+    .psim-field { display:flex; flex-direction:column; gap:6px; }
+    .psim-field label { font-size:13px; font-weight:700; color:var(--text); letter-spacing:.06em; }
+    .psim-field select { padding:10px 14px; border:1.5px solid var(--border); border-radius:10px; font-family:'Noto Sans JP',sans-serif; font-size:14px; color:var(--text); background:white; outline:none; transition:border-color .2s; cursor:pointer; }
+    .psim-field select:focus { border-color:var(--blue); }
+    .il-opts-row { display:flex; gap:16px; flex-wrap:wrap; margin-bottom:16px; }
+    .il-opts-row .psim-field { flex:1; min-width:140px; }
+    .de-opt-toggle { margin-top:12px; }
+    .de-opt-toggle-label { font-size:13px; font-weight:700; color:var(--blue-d); padding:4px 0; margin-bottom:6px; }
+    .de-opt-list { list-style:none; margin:0; padding:0; border:1px solid var(--border); border-radius:var(--r-md); overflow:hidden; }
+    .de-opt-list li { display:flex; justify-content:space-between; padding:8px 12px; font-size:13px; border-bottom:1px solid var(--border); }
+    .de-opt-list li:last-child { border-bottom:none; }
+    .de-opt-list .opt-note { color:var(--muted); }
+    .psim-result { display:block; margin:20px 0 4px; padding:20px 24px; background:linear-gradient(135deg,rgba(150,191,221,.12) 0%,#fff 100%); border:2px solid var(--blue); border-radius:16px; text-align:center; }
+    .psim-result-label { font-size:12px; color:var(--muted); letter-spacing:.08em; margin-bottom:12px; }
+    .psim-tiers { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-bottom:6px; }
+    .psim-tier { text-align:center; background:var(--bg); border:1px solid var(--border); border-radius:10px; padding:10px 16px; min-width:80px; }
+    .psim-tier .t-name { font-size:11px; color:var(--muted); margin-bottom:4px; }
+    .psim-tier .t-price { font-size:17px; font-weight:700; font-family:'Mulish',sans-serif; }
+    .psim-flat { font-size:26px; font-weight:700; font-family:'Mulish',sans-serif; color:var(--text); }
+    .psim-sub { font-size:11px; color:var(--muted); margin-top:8px; }
+
+    /* ===== ボタン選択UI ===== */
+    .sel-group { margin-bottom:30px; }
+    .sel-label { font-size:13px; font-weight:700; color:var(--text); letter-spacing:.06em; margin-bottom:8px; text-align:center; }
+    .sel-btns { display:flex; flex-wrap:wrap; justify-content:center; gap:8px; }
+    .sel-placeholder { display:block; color:var(--muted); font-size:13px; padding:6px 0; width:100%; text-align:center; }
+
+    /* ===== セット プランボタン（2列・セット名大＋特典内容小） ===== */
+    .ot-plan-btns { display:grid !important; grid-template-columns:repeat(2, 1fr) !important; gap:8px; width:100%; }
+    .ot-plan-btn { display:flex; flex-direction:column; align-items:flex-start; gap:6px; padding:12px 14px; border:2px solid var(--border); border-radius:var(--r-md); background:white; cursor:pointer; text-align:left; transition:background .15s, border-color .15s; width:100%; box-sizing:border-box; }
+    .ot-plan-btn:hover { border-color:var(--blue); }
+    .ot-plan-btn.active { background:var(--blue-ll); border-color:var(--blue); }
+    .ot-plan-name { font-size:15px; font-weight:700; color:var(--text); line-height:1.3; }
+    .ot-plan-btn.active .ot-plan-name { color:var(--blue-d); }
+    .ot-plan-list { margin:0; padding-left:0; font-size:10px; color:var(--muted); line-height:1.8; list-style:none; }
+    .ot-plan-two-col { display:flex; gap:8px; width:100%; }
+    .ot-plan-two-col .ot-plan-list { flex:1; min-width:0; }
+    .ot-plan-list li { display:flex; gap:2px; word-break:keep-all; overflow-wrap:break-word; min-width:0; }
+    .ot-plan-list li::before { content:'•'; flex-shrink:0; }
+
+    /* ===== シークレットセット ===== */
+    .ot-secret-list { display:flex; flex-direction:column; gap:8px; margin-top:8px; }
+    .ot-secret-item { padding:8px 12px; background:var(--blue-l); border-radius:var(--r-md); }
+    .ot-secret-name { font-size:13px; font-weight:700; color:var(--blue-d); margin-bottom:2px; }
+    .ot-secret-cond { font-size:11px; color:var(--pink); font-weight:700; margin-bottom:2px; }
+    .ot-secret-desc { font-size:12px; color:var(--text); line-height:1.5; }
+
+    /* ===== ロゴオプション（デザインフォーム） ===== */
+    .de-logo-opts { margin-top:12px; }
+    .de-logo-opts-section { margin-bottom:30px; }
+    .de-logo-opts-title { font-size:12px; font-weight:700; color:var(--muted); letter-spacing:.08em; margin-bottom:8px; }
+    .de-chk-row { display:flex; align-items:center; gap:8px; padding:5px 0; cursor:pointer; font-size:13px; }
+    .de-chk-row input { width:16px; height:16px; accent-color:var(--blue); flex-shrink:0; }
+    .de-chk-note { color:var(--muted); font-size:12px; }
+    .de-logo-opt-row { display:flex; align-items:center; gap:10px; margin-bottom:8px; flex-wrap:wrap; }
+    .de-opt-name { font-size:13px; min-width:160px; flex-shrink:0; }
+    .de-opt-btns { display:flex; gap:6px; flex-wrap:wrap; }
+    .de-opt-btns .sel-btn { flex:none; padding:5px 12px; font-size:12px; }
+    .sel-btn {
+      flex:0 0 calc(25% - 6px); padding:12px 10px; border:2px solid var(--border); border-radius:var(--r-md);
+      background:white; color:var(--text); font-family:'Noto Sans JP',sans-serif;
+      font-size:14px; font-weight:700; cursor:pointer; text-align:center;
+      transition:background .15s, color .15s, border-color .15s;
+    }
+    .sel-btn:hover { border-color:var(--blue); color:var(--blue-d); }
+    .sel-btn.active { background:var(--blue-ll); color:var(--blue-d); border-color:var(--blue); }
+    .sel-divider { border:none; border-top:1px solid var(--border); margin:30px 0; }
+    .sel-sub { display:block; font-size:11px; font-weight:400; color:var(--muted); margin-top:4px; line-height:1.5; }
+    .sel-btn.active .sel-sub { color:rgba(150,191,221,.8); }
+
+    /* ===== 作例確認ボタン（タブ直下） ===== */
+    .works-check-btn {
+      display:block; text-align:center; margin:24px auto 0;
+      padding:10px 24px; background:var(--pink);
+      border-radius:100px; color:white; font-family:'Noto Sans JP',sans-serif;
+      font-size:14px; font-weight:700; text-decoration:none; letter-spacing:.04em;
+      max-width:320px; transition:background .2s, transform .1s;
+    }
+    .works-check-btn:hover { background:#e03591; }
+    .works-check-btn:active { transform:scale(.97); }
+    .works-check-btn .arrow { display:inline-block; margin-left:6px; }
   </style>
 </head>
 <body>
@@ -1013,13 +1271,154 @@
 
   </div>
 
-  <!-- ===== シミュレーター ===== -->
+  <!-- ===== シミュレーター（上位タブ） ===== -->
   <div class="section fade-in">
     <div class="sec-title">
-      <h2>ご依頼シミュレーター</h2>
-      <p>選んで送るだけ。入力内容を自動でまとめてコピーします。</p>
+      <h2>ご依頼サポート</h2>
+      <p>大まかな金額の確認や、ご依頼内容のまとめに使えます。</p>
       <div class="sec-line"></div>
     </div>
+
+    <div class="main-tab-wrap">
+      <!-- 上位タブ -->
+      <div class="main-tabs">
+        <button class="main-tab-btn active" data-main="sim" onclick="switchMainTab(this)">
+          金額シミュレーター
+        </button>
+        <button class="main-tab-btn" data-main="order" onclick="switchMainTab(this)">
+          ご依頼シミュレーター
+        </button>
+      </div>
+
+      <!-- ステップ（パネル外・独立） -->
+      <div class="sim-steps">
+        <div class="sim-step"><span class="step-num">1</span><span class="step-text">依頼内容を選ぶ</span></div>
+        <span class="sim-step-arrow">›</span>
+        <div class="sim-step"><span class="step-num">2</span><span class="step-text">金額を確認する</span></div>
+        <span class="sim-step-arrow">›</span>
+        <div class="sim-step"><span class="step-num">3</span><span class="step-text">制作実績で料金帯を見比べる</span></div>
+        <span class="sim-step-arrow">›</span>
+        <div class="sim-step"><span class="step-num">4</span><span class="step-text">ご依頼シミュレーターへ</span></div>
+      </div>
+
+      <!-- ===== 金額シミュレーターパネル ===== -->
+      <div class="main-panel active" data-main="sim">
+        <div class="main-panel-inner">
+
+          <div class="psim-tabs">
+            <button class="psim-tab-btn active" data-psim="illust" onclick="switchPsimTab(this)">イラスト<span class="cat-sub">1枚絵・立ち絵・SDなど</span></button>
+            <button class="psim-tab-btn" data-psim="design" onclick="switchPsimTab(this)">デザイン<span class="cat-sub">ロゴ・配信画面など</span></button>
+            <button class="psim-tab-btn" data-psim="other" onclick="switchPsimTab(this)">セット<span class="cat-sub">VTuber・IRIAMセット</span></button>
+          </div>
+
+          <!-- イラスト -->
+          <div class="psim-form active" data-psim="illust">
+            <!-- 大カテゴリ（ベース） -->
+            <div class="sel-group">
+              <div class="sel-label">ベース</div>
+              <div class="sel-btns">
+                <button class="sel-btn" data-ilcat="chara" onclick="selectIlCat(this)">キャライラスト<span class="sel-sub">アイコン・一枚絵・SDキャラ</span></button>
+                <button class="sel-btn" data-ilcat="tachie" onclick="selectIlCat(this)">立ち絵<span class="sel-sub">立ち絵・IRIAM立ち絵・Live2D用</span></button>
+                <button class="sel-btn" data-ilcat="other" onclick="selectIlCat(this)">その他イラスト<span class="sel-sub">サムネイル・歌ってみた・ぬいぐるみ等</span></button>
+              </div>
+            </div>
+            <!-- 内容（常時表示・ベース選択で切り替え） -->
+            <div class="sel-group">
+              <div class="sel-label">内容</div>
+              <div class="sel-btns" id="il-content-btns">
+                <span class="sel-placeholder">ベースを選ぶと表示されます</span>
+              </div>
+            </div>
+            <!-- 構図（常時表示・内容選択で切り替え） -->
+            <div class="sel-group">
+              <div class="sel-label">構図</div>
+              <div class="sel-btns" id="il-pose-btns">
+                <span class="sel-placeholder">内容を選ぶと表示されます</span>
+              </div>
+            </div>
+            <hr class="sel-divider">
+            <!-- オプション -->
+            <div class="il-opts-row">
+              <div class="psim-field">
+                <label>背景の有無</label>
+                <select id="il-opt-bg" onchange="calcPsimPrice()">
+                  <option value="なし">なし（透過）</option>
+                  <option value="単色">単色（無料）</option>
+                  <option value="簡易">簡易背景（¥1,000〜）</option>
+                  <option value="書き込み">書き込み背景（¥5,000〜）</option>
+                </select>
+              </div>
+              <div class="psim-field">
+                <label>差分の個数</label>
+                <select id="il-opt-diff" onchange="calcPsimPrice()">
+                  <option value="なし">なし</option>
+                  <option value="1">1つ（¥1,000〜）</option>
+                  <option value="2">2つ（¥2,000〜）</option>
+                  <option value="3">3つ（¥3,000〜）</option>
+                  <option value="4">4つ（¥4,000〜）</option>
+                  <option value="5">5つ（¥5,000〜）</option>
+                  <option value="6">6つ（¥6,000〜）</option>
+                  <option value="7">7つ（¥7,000〜）</option>
+                  <option value="8">8つ（¥8,000〜）</option>
+                  <option value="9">9つ（¥9,000〜）</option>
+                  <option value="10">10つ（¥10,000〜）</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- デザイン -->
+          <div class="psim-form" data-psim="design">
+            <!-- 大カテゴリ -->
+            <div class="sel-group">
+              <div class="sel-label">ベース</div>
+              <div class="sel-btns">
+                <button class="sel-btn" data-decat="logo" onclick="selectDeCat(this)">ロゴ<span class="sel-sub">ネームロゴ・シンボルロゴ等</span></button>
+                <button class="sel-btn" data-decat="stream" onclick="selectDeCat(this)">配信画面<span class="sel-sub">配信画面デザイン・配信背景</span></button>
+                <button class="sel-btn" data-decat="other" onclick="selectDeCat(this)">その他<span class="sel-sub">ヘッダー・サムネイル・壁紙等</span></button>
+              </div>
+            </div>
+            <!-- 内容（常時表示・ベース選択で切り替え） -->
+            <div class="sel-group">
+              <div class="sel-label">内容</div>
+              <div id="de-content-inner">
+                <span class="sel-placeholder">ベースを選ぶと表示されます</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- セット -->
+          <div class="psim-form" data-psim="other">
+            <!-- ベース（VTuber / IRIAM） -->
+            <div class="sel-group">
+              <div class="sel-label">ベース</div>
+              <div class="sel-btns">
+                <button class="sel-btn" data-otcat="vtuber" onclick="selectOtCat(this)">VTuber<span class="sel-sub">VTuberデビュー・配信環境セット</span></button>
+                <button class="sel-btn" data-otcat="iriam" onclick="selectOtCat(this)">IRIAM<span class="sel-sub">IRIAMデビュー・配信環境セット</span></button>
+              </div>
+            </div>
+            <!-- セット内容（常時表示・ベース選択で切り替え） -->
+            <div class="sel-group">
+              <div class="sel-label">プラン</div>
+              <div id="ot-content-inner">
+                <span class="sel-placeholder">ベースを選ぶと表示されます</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 金額表示エリア -->
+          <div class="psim-result" id="psim-result">
+            <div class="psim-result-label">参考価格（概算・税込）</div>
+            <div class="psim-tiers" id="psim-tiers"></div>
+            <div class="psim-sub" id="psim-sub"></div>
+          </div>
+
+        </div><!-- /main-panel-inner sim -->
+      </div><!-- /main-panel sim -->
+
+      <!-- ===== ご依頼シミュレーターパネル ===== -->
+      <div class="main-panel" data-main="order">
+        <div class="main-panel-inner">
 
     <div class="cat-tabs">
       <button class="cat-btn active" data-cat="illust"  onclick="switchCat(this)">イラスト<span class="cat-sub">立ち絵・1枚絵・ミニキャラ等</span></button>
@@ -1470,8 +1869,13 @@
         </div>
       </div>
     </div>
-    <a class="sim-works-link sim-works-static" href="#works">制作実績で作例を確認する <span class="link-arrow">↓</span></a>
-  </div>
+        </div><!-- /main-panel-inner order -->
+      </div><!-- /main-panel order -->
+    </div><!-- /main-tab-wrap -->
+  </div><!-- /section シミュレーター -->
+
+  <!-- 作例確認ボタン -->
+  <a class="works-check-btn" href="#works">制作実績で作例を確認する <span class="arrow">↓</span></a>
 
   <!-- ===== 作例 ===== -->
   <div class="section fade-in" id="works">
@@ -2569,6 +2973,30 @@
     document.querySelector(`.price-wrap[data-table="${price}"]`).classList.add('active');
   }
 
+  /* デザインタブ：各テーブルに個別オーバーレイを追加、スクロールで全消し */
+  (function() {
+    const wrap = document.querySelector('.price-wrap[data-table="design"]');
+    if (!wrap) return;
+    const overlayHTML = '<span class="scroll-overlay-arrow">→</span><span class="scroll-overlay-text">右にスライドして確認</span>';
+    const overlays = [];
+
+    wrap.querySelectorAll('table').forEach(table => {
+      const div = document.createElement('div');
+      div.style.cssText = 'position:relative;';
+      table.parentNode.insertBefore(div, table);
+      div.appendChild(table);
+      const ov = document.createElement('div');
+      ov.className = 'scroll-overlay';
+      ov.innerHTML = overlayHTML;
+      div.appendChild(ov);
+      overlays.push(ov);
+      ov.addEventListener('click', hideAll, { once: true });
+    });
+
+    function hideAll() { overlays.forEach(ov => { ov.style.display = 'none'; }); }
+    wrap.addEventListener('scroll', hideAll, { once: true });
+  })();
+
   /* ===== WORKSタブ切り替え ===== */
   function switchWorksTab(btn) {
     const works = btn.dataset.works;
@@ -2585,20 +3013,17 @@
     const isOpen = body.classList.contains('open');
 
     if (isOpen) {
-      // 閉じる: 現在の実際の高さを明示してから0へ（遅延なし）
-      body.style.transition = 'max-height .9s ease-out';
+      body.style.transition = 'max-height .6s ease-out';
       body.style.maxHeight = body.scrollHeight + 'px';
-      requestAnimationFrame(() => requestAnimationFrame(() => {
-        body.style.maxHeight = '0';
-      }));
+      body.offsetHeight; // リフロー強制（none→実測値→0 のアニメーションを確実に動かす）
+      body.style.maxHeight = '0';
       body.classList.remove('open');
     } else {
-      // 開く: ぬるっと
-      body.style.transition = 'max-height 1.2s cubic-bezier(0.4, 0, 0.2, 1)';
+      body.style.transition = 'max-height .8s cubic-bezier(0.4, 0, 0.2, 1)';
       body.style.maxHeight = body.scrollHeight + 'px';
       body.classList.add('open');
       body.addEventListener('transitionend', () => {
-        body.style.maxHeight = 'none';
+        if (body.classList.contains('open')) body.style.maxHeight = 'none';
       }, { once: true });
     }
 
@@ -2885,6 +3310,7 @@ ${val('ot-note')}
   }, { threshold: 0.08 });
   document.querySelectorAll('.fade-in').forEach(el => io.observe(el));
 
+  /* ===== WORKSプレビュー展開（全パネル共通：1枚表示→さらに見る） ===== */
   /* ===== デザインWORKSプレビュー展開 ===== */
   (function initDesignPreview() {
     const moreHtml  = count => `さらに見る（+${count}枚）<span class="preview-arrow">▼</span>`;
@@ -3069,6 +3495,168 @@ ${val('ot-note')}
     });
   })();
 
+  /* ===== イラスト右クリック保存防止 ===== */
+  document.querySelector('[data-works="illust"]')?.addEventListener('contextmenu', e => {
+    if (e.target.closest('.gallery-item')) e.preventDefault();
+  });
+
+  /* ===== 参考価格計算（料金表HTMLから動的読み込み） ===== */
+    /* ===== スマホのみ：各works-sub-groupを1枚に折りたたむ ===== */
+  if (window.innerWidth <= 680) {
+    document.querySelectorAll('.works-sub-group').forEach(sg => {
+      const allItems = Array.from(sg.querySelectorAll('.gallery-item'));
+      if (allItems.length <= 1) return;
+      allItems.forEach(el => el.classList.remove('preview-hidden'));
+      allItems.slice(1).forEach(el => el.classList.add('preview-hidden'));
+      const total = allItems.length - 1;
+      sg.querySelectorAll('.preview-more-btn').forEach(b => b.remove());
+      const btn = document.createElement('button');
+      btn.className = 'preview-more-btn';
+      btn.innerHTML = `さらに見る（+${total}枚）<span class="preview-arrow">▼</span>`;
+      sg.appendChild(btn);
+      let open = false;
+      btn.onclick = () => {
+        open = !open;
+        allItems.slice(1).forEach(el => el.classList.toggle('preview-hidden', !open));
+        btn.innerHTML = open ? '折りたたむ ↑' : `さらに見る（+${total}枚）<span class="preview-arrow">▼</span>`;
+        if (!open) sg.scrollIntoView({ behavior:'smooth', block:'nearest' });
+      };
+    });
+  }
+
+  (function initPriceCalc() {
+    const COL = { '梅（ライトプラン）': 'ume', '竹（スタンダード）': 'take', '松（ハイグレード）': 'matsu', '松（ハイエンド）': 'hiend', '参考価格': 'flat' };
+    const TIER_KEY = {
+      '梅（ライトプラン）':   'ume',
+      '竹（スタンダード）':   'take',
+      '松（ハイグレード）':   'matsu',
+      '松（ハイエンド）':     'hiend',
+    };
+    const PREFIX = { illust: 'il', design: 'de', other: 'ot' };
+
+    /* 料金表trのdata-sim-keyと列ヘッダーからマップを構築 */
+    function buildPriceMap() {
+      const map = {};
+      document.querySelectorAll('[data-table] [data-sim-key]').forEach(tr => {
+        const key   = tr.dataset.simKey;
+        const table = tr.closest('table');
+        const heads = Array.from(table.querySelectorAll('thead th')).map(th => th.textContent.trim());
+        const cells = tr.querySelectorAll('td');
+        map[key] = {};
+        for (let i = 1; i < cells.length; i++) {
+          const colKey = COL[heads[i]];
+          const price  = cells[i].textContent.trim();
+          if (colKey && price && price !== '—') map[key][colKey] = price;
+        }
+      });
+      return map;
+    }
+
+    const PRICE = buildPriceMap();
+
+    const resultEl = document.getElementById('sim-price-result');
+    const tiersEl  = document.getElementById('sim-price-tiers');
+    const subEl    = document.getElementById('sim-price-sub');
+
+    const TIER_DEFS = [
+      { key: 'ume',   label: '梅（ライトプラン）',   cls: 'p-ume'      },
+      { key: 'take',  label: '竹（スタンダード）',   cls: 'p-take'     },
+      { key: 'matsu', label: '松（ハイグレード）',   cls: 'p-matsu'    },
+      { key: 'hiend', label: '松（ハイエンド）',     cls: 'p-matsu-hi' },
+    ];
+
+    function calcPrice(cat) {
+      const pfx     = PREFIX[cat];
+      const typeVal = document.getElementById(`${pfx}-type`)?.value ?? '';
+      const tierVal = document.getElementById(`${pfx}-tier`)?.value ?? '';
+
+      /* SDイラスト構図フィールドの表示制御 */
+      if (cat === 'illust') {
+        const sdField = document.getElementById('il-sd-pose-field');
+        if (sdField) sdField.style.display = typeVal === 'SDイラスト' ? '' : 'none';
+      }
+
+      if (!typeVal) { hide(); return; }
+      if (typeVal === 'その他・要相談' || typeVal === '立ち絵（差分なし）' || typeVal === 'モーション付き配信画面') { showConsult(); return; }
+      if (typeVal === '量産型イラスト') { showRyousan(); return; }
+      if (typeVal === '500円均一商品' || tierVal === '500円均一') { showFlat('¥500', '500円均一メニュー'); return; }
+      if (tierVal === 'おまかせ・相談したい') { hide(); return; }
+
+      /* 一枚絵は構図イメージで細分化 */
+      let lookupKey = typeVal;
+      if (typeVal === '一枚絵') {
+        const pose = document.getElementById('il-pose')?.value ?? '';
+        if (pose === '胸上' || pose === '腰上' || pose === '全身') {
+          lookupKey = `一枚絵-${pose}`;
+        } else {
+          /* 構図未選択・おまかせ → 最低価格＋応相談で誘導 */
+          const basePrice = PRICE['一枚絵-胸上']?.take ?? '¥4,000〜';
+          showFlat(basePrice, '構図によって変わります。応相談');
+          return;
+        }
+      }
+
+      /* SDイラストは専用構図selectで細分化 */
+      if (typeVal === 'SDイラスト') {
+        const sdPose = document.getElementById('il-sd-pose')?.value ?? '';
+        if (sdPose === '顔のみ' || sdPose === 'バストアップ' || sdPose === '全身') {
+          lookupKey = `SDイラスト-${sdPose}`;
+        } else {
+          const basePrice = PRICE['SDイラスト-顔のみ']?.take ?? '¥1,000〜';
+          showFlat(basePrice, '構図によって変わります。応相談');
+          return;
+        }
+      }
+
+      const row = PRICE[lookupKey];
+      if (!row) { hide(); return; }
+
+      /* flat（単品固定価格）→ 制作実績へ誘導 */
+      if (row.flat) { showFlat(row.flat, '固定価格メニュー'); return; }
+
+      /* 全料金帯を一覧表示 */
+      showTiers(row);
+    }
+
+    function showTiers(row) {
+      const available = TIER_DEFS.filter(t => row[t.key]);
+      if (!available.length) { hide(); return; }
+      tiersEl.innerHTML = available.map(t =>
+        `<div class="sim-price-tier"><div class="tier-name">${t.label}</div><div class="tier-price ${t.cls}">${row[t.key]}</div></div>`
+      ).join('') + `<span style="flex:0 0 100%; height:0;"></span><a class="sim-works-link" href="#works">制作実績で作例を確認する <span class="link-arrow">↓</span></a>`;
+      subEl.textContent = '※概算です。詳細はお問い合わせください。';
+      resultEl.classList.add('visible');
+    }
+    function showFlat(price, label) {
+      tiersEl.innerHTML = `<div class="sim-price-flat">${price}</div><span style="flex:0 0 100%; height:0;"></span><a class="sim-works-link" href="#works">制作実績で作例を確認する <span class="link-arrow">↓</span></a>`;
+      subEl.textContent = `※${label}`;
+      resultEl.classList.add('visible');
+    }
+    function showRyousan() {
+      const price = PRICE['量産型イラスト']?.flat ?? '¥4,000〜';
+      tiersEl.innerHTML = `<div class="sim-price-flat">${price}</div><span style="flex:0 0 100%; height:0;"></span><a class="sim-works-link" href="#ryousan">通常依頼可能中のモデルを確認する <span class="link-arrow">↓</span></a>`;
+      subEl.textContent = '※参考価格';
+      resultEl.classList.add('visible');
+    }
+    function showConsult() {
+      tiersEl.innerHTML = `<div class="sim-price-flat" style="color:var(--muted);">要相談</div>`;
+      subEl.textContent = 'お気軽にお問い合わせください。';
+      resultEl.classList.add('visible');
+    }
+    function hide() { resultEl.classList.remove('visible'); }
+
+    Object.keys(PREFIX).forEach(cat => {
+      const pfx = PREFIX[cat];
+      document.getElementById(`${pfx}-type`)?.addEventListener('change', () => calcPrice(cat));
+      document.getElementById(`${pfx}-tier`)?.addEventListener('change', () => calcPrice(cat));
+    });
+    document.getElementById('il-pose')?.addEventListener('change', () => calcPrice('illust'));
+    document.getElementById('il-sd-pose')?.addEventListener('change', () => calcPrice('illust'));
+
+    const origSwitchCat = window.switchCat;
+    window.switchCat = function(btn) { hide(); origSwitchCat?.(btn); };
+  })();
+
   /* ===== スマホのみ：各works-sub-groupを1枚に折りたたむ ===== */
   if (window.innerWidth <= 680) {
     document.querySelectorAll('.works-sub-group').forEach(sg => {
@@ -3076,24 +3664,27 @@ ${val('ot-note')}
       if (allItems.length <= 1) return;
       allItems.forEach(el => el.classList.remove('preview-hidden'));
       allItems.slice(1).forEach(el => el.classList.add('preview-hidden'));
-      const hidden = allItems.length - 1;
+      sg.querySelectorAll('.tier-group').forEach(el => { el.style.flex = 'none'; el.style.width = '100%'; });
+      sg.querySelectorAll('.tier-group-images').forEach(el => { el.style.gridTemplateColumns = '1fr'; });
+      const total = allItems.length - 1;
       sg.querySelectorAll('.preview-more-btn').forEach(b => b.remove());
       const btn = document.createElement('button');
       btn.className = 'preview-more-btn';
-      btn.innerHTML = `さらに見る（+${hidden}枚）<span class="preview-arrow">▼</span>`;
+      btn.innerHTML = `さらに見る（+${total}枚）<span class="preview-arrow">▼</span>`;
       sg.appendChild(btn);
       let open = false;
       btn.onclick = () => {
         open = !open;
         allItems.slice(1).forEach(el => el.classList.toggle('preview-hidden', !open));
-        btn.innerHTML = open ? '折りたたむ ↑' : `さらに見る（+${hidden}枚）<span class="preview-arrow">▼</span>`;
+        btn.innerHTML = open ? '折りたたむ ↑' : `さらに見る（+${total}枚）<span class="preview-arrow">▼</span>`;
         if (!open) sg.scrollIntoView({ behavior:'smooth', block:'nearest' });
       };
     });
   }
 
-  /* ===== イラスト右クリック保存防止 ===== */
-  document.querySelector('[data-works="illust"]')?.addEventListener('contextmenu', e => {
+  /* ===== 上位タブ切り替え ===== */
+  /* ===== 制作実績セクション全体：右クリック保存防止 ===== */
+  document.getElementById('works')?.addEventListener('contextmenu', e => {
     if (e.target.closest('.gallery-item')) e.preventDefault();
   });
 
@@ -3231,6 +3822,460 @@ ${val('ot-note')}
     window.switchCat = function(btn) { hide(); origSwitchCat?.(btn); };
   })();
 
+  /* ===== 上位タブ切り替え ===== */
+  function switchMainTab(btn) {
+    const wrap = btn.closest('.main-tab-wrap');
+    wrap.querySelectorAll('.main-tab-btn').forEach(b => b.classList.remove('active'));
+    wrap.querySelectorAll('.main-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    wrap.querySelector(`.main-panel[data-main="${btn.dataset.main}"]`).classList.add('active');
+  }
+
+  /* ===== 金額シミュレータータブ切り替え ===== */
+  let currentPsim = 'illust';
+  function switchPsimTab(btn) {
+    const cat = btn.dataset.psim;
+    if (cat === currentPsim) return;
+    currentPsim = cat;
+    btn.closest('.psim-tabs').querySelectorAll('.psim-tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.psim-form').forEach(f => f.classList.remove('active'));
+    document.querySelector(`.psim-form[data-psim="${cat}"]`).classList.add('active');
+    hidePsim();
+  }
+
+  /* ===== 金額シミュレーター計算 ===== */
+  (function() {
+    const COL = {
+      '梅（ライトプラン）': 'ume',
+      '竹（スタンダード）': 'take',
+      '松（ハイグレード）': 'matsu',
+      '松（ハイエンド）':   'hiend',
+    };
+    const TIER_DEFS = [
+      { key:'ume',   label:'梅（ライトプラン）', cls:'p-ume'      },
+      { key:'take',  label:'竹（スタンダード）', cls:'p-take'     },
+      { key:'matsu', label:'松（ハイグレード）', cls:'p-matsu'    },
+      { key:'hiend', label:'松（ハイエンド）',   cls:'p-matsu-hi' },
+    ];
+
+    function buildPriceMap() {
+      const map = {};
+      document.querySelectorAll('[data-sim-key]').forEach(tr => {
+        const key   = tr.dataset.simKey;
+        const table = tr.closest('table');
+        const heads = Array.from(table.querySelectorAll('thead th')).map(th => th.textContent.trim());
+        const cells = tr.querySelectorAll('td');
+        map[key] = {};
+        for (let i = 1; i < cells.length; i++) {
+          const colKey = COL[heads[i]];
+          const price  = cells[i].textContent.trim();
+          if (colKey && price && price !== '—') map[key][colKey] = price;
+        }
+      });
+      /* flat価格（単品テーブル）*/
+      document.querySelectorAll('.price-table-flat [data-sim-key]').forEach(tr => {
+        const key = tr.dataset.simKey;
+        if (!map[key]) map[key] = {};
+        const td = tr.querySelectorAll('td')[1];
+        if (td) map[key].flat = td.textContent.trim();
+      });
+      return map;
+    }
+
+    const resultEl = document.getElementById('psim-result');
+    const tiersEl  = document.getElementById('psim-tiers');
+    const subEl    = document.getElementById('psim-sub');
+    let PRICE = null;
+
+    /* ボタン選択状態 */
+    let psimIlKey = '', psimIlPose = '', psimIlSdPose = '', psimDeKey = '', psimOtKey = '';
+
+    /* 初期表示 */
+    tiersEl.innerHTML = '<div style="color:var(--muted);font-size:14px;padding:4px 0;">依頼内容を選ぶと表示されます</div>';
+
+    /* ── イラスト フォーム データ ── */
+    const IL_CAT_DATA = {
+      chara: [
+        {key:'アイコンイラスト', label:'アイコン'},
+        {key:'一枚絵', label:'一枚絵'},
+        {key:'SDイラスト', label:'SDキャラ'},
+      ],
+      tachie: [
+        {key:'IRIAM立ち絵', label:'立ち絵 / IRIAM立ち絵'},
+        {key:'Live2D用パーツ分け立ち絵', label:'Live2D用パーツ分け立ち絵'},
+      ],
+      other: [
+        {key:'サムネイルイラスト', label:'サムネイルイラスト'},
+        {key:'歌ってみたイラスト', label:'歌ってみたイラスト'},
+        {key:'アニマルぬいぐるみ', label:'アニマルぬいぐるみ'},
+        {key:'顔スタンプ', label:'顔スタンプ'},
+        {key:'卓上用/ライブ用マイクイラスト', label:'マイクイラスト'},
+        {key:'ゲーミングチェアイラスト', label:'ゲーミングチェアイラスト'},
+        {key:'グッズデザインイラスト', label:'グッズデザインイラスト'},
+      ]
+    };
+
+    const IL_POSE_DATA = {
+      '一枚絵': [
+        {attr:'data-pose', key:'胸上', label:'バストアップ（胸上）', fn:'selectIlPose'},
+        {attr:'data-pose', key:'腰上', label:'ウエストアップ（腰上）', fn:'selectIlPose'},
+        {attr:'data-pose', key:'全身', label:'全身', fn:'selectIlPose'},
+      ],
+      'SDイラスト': [
+        {attr:'data-sdpose', key:'顔のみ', label:'顔のみ', fn:'selectIlSdPose'},
+        {attr:'data-sdpose', key:'バストアップ', label:'バストアップ', fn:'selectIlSdPose'},
+        {attr:'data-sdpose', key:'全身', label:'全身', fn:'selectIlSdPose'},
+      ]
+    };
+
+    /* ── デザイン フォーム データ ── */
+    const DE_CAT_DATA = {
+      logo: {
+        items: [
+          {key:'ネームロゴ', label:'ネームロゴ'},
+          {key:'シンボルロゴ', label:'シンボルロゴ'},
+          {key:'カプロゴ', label:'カプロゴ'},
+          {key:'企画・タイトルロゴ', label:'タイトルロゴ'},
+          {key:'ネオンサイン', label:'ネオンサイン'},
+          {key:'シンボルマーク', label:'シンボルマーク'},
+          {key:'ウォーターマーク', label:'ウォーターマーク'},
+        ],
+        extraHtml: `<hr class="sel-divider"><div class="de-logo-opts">
+  <div class="de-logo-opts-section">
+    <div class="de-logo-opts-title">特別用途</div>
+    <label class="de-chk-row"><input type="checkbox" class="de-chk" value="イベント・店舗ロゴ"><span>イベント・店舗ロゴ</span><span class="de-chk-note">要検討</span></label>
+    <label class="de-chk-row"><input type="checkbox" class="de-chk" value="企業・法人様向け"><span>企業・法人様向け</span><span class="de-chk-note">要検討</span></label>
+  </div>
+  <div class="de-logo-opts-section">
+    <div class="de-logo-opts-title">オプション</div>
+    <div class="de-logo-opt-row">
+      <div class="de-opt-name">ロゴの色違い・モノクロ化</div>
+      <div class="de-opt-btns">
+        <button class="sel-btn" onclick="this.closest('.de-opt-btns').querySelectorAll('.sel-btn').forEach(b=>b.classList.remove('active'));this.classList.add('active')">必要ない</button>
+        <button class="sel-btn" onclick="this.closest('.de-opt-btns').querySelectorAll('.sel-btn').forEach(b=>b.classList.remove('active'));this.classList.add('active')">必要（1割〜5割程度）</button>
+      </div>
+    </div>
+    <div class="de-logo-opt-row">
+      <div class="de-opt-name">ロゴのワンカラー版</div>
+      <div class="de-opt-btns">
+        <button class="sel-btn" onclick="this.closest('.de-opt-btns').querySelectorAll('.sel-btn').forEach(b=>b.classList.remove('active'));this.classList.add('active')">必要ない</button>
+        <button class="sel-btn" onclick="this.closest('.de-opt-btns').querySelectorAll('.sel-btn').forEach(b=>b.classList.remove('active'));this.classList.add('active')">必要（要検討）</button>
+      </div>
+    </div>
+    <div class="de-logo-opt-row">
+      <div class="de-opt-name">ロゴのパーツ分け</div>
+      <div class="de-opt-btns">
+        <button class="sel-btn" onclick="this.closest('.de-opt-btns').querySelectorAll('.sel-btn').forEach(b=>b.classList.remove('active'));this.classList.add('active')">必要ない</button>
+        <button class="sel-btn" onclick="this.closest('.de-opt-btns').querySelectorAll('.sel-btn').forEach(b=>b.classList.remove('active'));this.classList.add('active')">必要（要検討）</button>
+      </div>
+    </div>
+  </div>
+</div>`
+      },
+      stream: {
+        items: [
+          {key:'配信画面デザイン', label:'配信画面デザイン'},
+          {key:'配信背景・配信部屋背景', label:'配信背景'},
+          {key:'モーション付き配信画面デザイン', label:'モーション付き配信画面'},
+        ],
+        extraHtml: ''
+      },
+      other: {
+        items: [
+          {key:'Xヘッダー', label:'Xヘッダー'},
+          {key:'IRIAMヘッダー', label:'IRIAMヘッダー'},
+          {key:'YouTubeチャンネルアート', label:'チャンネルアート'},
+          {key:'スケジュール表デザイン', label:'スケジュール表'},
+          {key:'4分割スケジュール表', label:'4分割スケジュール表'},
+          {key:'スマホ壁紙', label:'スマホ壁紙'},
+          {key:'デスクトップ壁紙', label:'デスクトップ壁紙'},
+          {key:'待ち受けカレンダー', label:'待ち受けカレンダー'},
+          {key:'YouTube-サムネイル', label:'YouTubeサムネイル'},
+          {key:'YouTube-汎用背景', label:'YouTube汎用背景'},
+          {key:'IRIAM-サムネイル', label:'IRIAMサムネイル'},
+          {key:'IRIAM-汎用背景', label:'IRIAM汎用背景'},
+          {key:'その他-サムネイル', label:'その他サムネイル'},
+          {key:'その他-汎用背景', label:'その他汎用背景'},
+          {key:'アイコンリング', label:'アイコンリング'},
+          {key:'Simejiキーボード背景', label:'Simejiキーボード背景'},
+          {key:'IRIAM-リザルトフレーム', label:'IRIAMリザルトフレーム'},
+          {key:'立ち絵公開画像', label:'立ち絵公開画像'},
+          {key:'ネットプリント', label:'ネットプリント'},
+          {key:'網掛け', label:'網掛け'},
+          {key:'Pt別返礼品一覧', label:'Pt別返礼品一覧'},
+          {key:'リアルグッズデザイン', label:'グッズデザイン'},
+        ],
+        extraHtml: ''
+      }
+    };
+
+    /* ── ヘルパー関数 ── */
+    function renderIlContentBtns(cat) {
+      const el = document.getElementById('il-content-btns');
+      el.innerHTML = IL_CAT_DATA[cat].map(i =>
+        `<button class="sel-btn" data-simkey="${i.key}" onclick="selectIlItem(this)">${i.label}</button>`
+      ).join('');
+    }
+
+    function renderIlPoseBtns(key) {
+      const el = document.getElementById('il-pose-btns');
+      const poses = IL_POSE_DATA[key];
+      if (!poses) {
+        el.innerHTML = '<span class="sel-placeholder">構図の選択は不要です</span>';
+        return;
+      }
+      el.innerHTML = poses.map(p =>
+        `<button class="sel-btn" ${p.attr}="${p.key}" onclick="${p.fn}(this)">${p.label}</button>`
+      ).join('');
+    }
+
+    function renderDeContentInner(cat) {
+      const data = DE_CAT_DATA[cat];
+      const inner = document.getElementById('de-content-inner');
+      inner.innerHTML =
+        '<div class="sel-btns">' +
+        data.items.map(i =>
+          `<button class="sel-btn" data-simkey="${i.key}" onclick="selectDeItem(this)">${i.label}</button>`
+        ).join('') +
+        '</div>' + data.extraHtml;
+    }
+
+    /* イラスト：大カテゴリ選択 */
+    window.selectIlCat = function(btn) {
+      btn.closest('.sel-btns').querySelectorAll('.sel-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      psimIlKey = ''; psimIlPose = ''; psimIlSdPose = '';
+      renderIlContentBtns(btn.dataset.ilcat);
+      document.getElementById('il-pose-btns').innerHTML = '<span class="sel-placeholder">内容を選ぶと表示されます</span>';
+      hidePsim();
+    };
+
+    /* イラスト：詳細項目選択 */
+    window.selectIlItem = function(btn) {
+      btn.closest('.sel-btns').querySelectorAll('.sel-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      psimIlKey = btn.dataset.simkey;
+      psimIlPose = ''; psimIlSdPose = '';
+      renderIlPoseBtns(psimIlKey);
+      calcPsimPrice();
+    };
+
+    /* イラスト：一枚絵構図 */
+    window.selectIlPose = function(btn) {
+      btn.closest('.sel-btns').querySelectorAll('.sel-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      psimIlPose = btn.dataset.pose;
+      calcPsimPrice();
+    };
+
+    /* イラスト：SD構図 */
+    window.selectIlSdPose = function(btn) {
+      btn.closest('.sel-btns').querySelectorAll('.sel-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      psimIlSdPose = btn.dataset.sdpose;
+      calcPsimPrice();
+    };
+
+    /* イラスト：オプション */
+    window.selectIlOpt = function(type, btn) {
+      btn.closest('.sel-btns').querySelectorAll('.sel-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    };
+
+    /* デザイン：大カテゴリ選択 */
+    window.selectDeCat = function(btn) {
+      btn.closest('.sel-btns').querySelectorAll('.sel-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      psimDeKey = '';
+      renderDeContentInner(btn.dataset.decat);
+      hidePsim();
+    };
+
+    /* ── セット フォーム データ ── */
+    const OT_CAT_DATA = {
+      vtuber: {
+        items: [
+          {key:'VTuber初心者セット',      label:'VTuber初心者セット',      desc:'配信画面1点・サムネイル1点・チャンネルアート1点'},
+          {key:'VTuberライトセット',       label:'VTuberライトセット',       desc:'配信画面2点・立ち絵公開画像1点'},
+          {key:'VTuberスタンダードセット', label:'VTuberスタンダードセット', desc:'配信画面2点・立ち絵公開画像1点・スケジュール表デザイン1点'},
+          {key:'VTuberプレミアムセット',   label:'VTuberプレミアムセット',   desc:'配信画面3点・立ち絵公開画像1点・スケジュール表デザイン1点・Xヘッダー1点・チャンネルアート1点'},
+          {key:'VTuberコンプリートセット', label:'VTuberコンプリートセット', desc:'配信画面4点・立ち絵公開画像1点・スケジュール表デザイン1点・Xヘッダー1点・チャンネルアート1点・ネームロゴ1点・シンボルロゴ1点'},
+        ],
+        secretHtml: ''
+      },
+      iriam: {
+        items: [
+          {key:'IRIAM初配信セット',                 label:'IRIAM初配信セット',                 desc:'サムネイル2点・アイコンリング1点・IRIAMヘッダー1点'},
+          {key:'IRIAM欲張りセット',                 label:'IRIAM欲張りセット',                 desc:'ネームロゴ1点・サムネイル2点・IRIAMヘッダー1点・アイコンリング1点・リザルトフレーム1点'},
+          {key:'IRIAMライトセット',                 label:'IRIAMライトセット',                 desc:'サムネイル2点・立ち絵公開画像1点'},
+          {key:'IRIAMスタンダードセット',           label:'IRIAMスタンダードセット',           desc:'サムネイル2点・立ち絵公開画像1点・スケジュール表デザイン1点'},
+          {key:'IRIAMプレミアムセット',             label:'IRIAMプレミアムセット',             desc:'サムネイル4点・立ち絵公開画像1点・スケジュール表デザイン1点・Xヘッダー1点・IRIAMヘッダー1点'},
+          {key:'IRIAMコンプリートセット',           label:'IRIAMコンプリートセット',           desc:'サムネイル7点・立ち絵公開画像1点・スケジュール表デザイン1点・Xヘッダー1点・IRIAMヘッダー1点・ネームロゴ1点・シンボルロゴ1点・リザルトフレーム1点'},
+          {key:'IRIAMサムネイルセット',             label:'IRIAMサムネイルセット',             desc:'サムネイル7点'},
+          {key:'IRIAM毎月パック / IRIAM専用セット', label:'IRIAM毎月パック / 専用セット',      desc:'アイコンリング1点・IRIAMヘッダー1点'},
+          {key:'IRIAMバナイベ・ガチイベ応援セット', label:'IRIAMバナイベ・ガチイベ応援セット', desc:'サムネイル7点・応援アイコンリング1点・応援IRIAMヘッダー1点・イベント告知画像1点'},
+          {key:'IRIAMデジタルガチャセット',         label:'IRIAMデジタルガチャセット',         desc:'アイコンリング3点・スマホ壁紙2点・IRIAMヘッダー3点・Xヘッダー2点'},
+        ],
+        secretHtml: `<hr class="sel-divider"><div class="de-logo-opts-title">シークレットセット</div>
+<div class="ot-secret-list">
+  <div class="ot-secret-item">
+    <div class="ot-secret-name">IRIAMデビュー付きっ切りセット</div>
+    <div class="ot-secret-cond">購入条件：IRIAM立ち絵を購入した方のみ</div>
+    <div class="ot-secret-desc">サムネイル5点（うち初配信1点）・アイコンリング1点・IRIAMヘッダー1点・初配信画像1点・リザルトフレーム1点</div>
+  </div>
+  <div class="ot-secret-item">
+    <div class="ot-secret-name">IRIAMバナイベ・ガチイベほぼ丸投げセット</div>
+    <div class="ot-secret-cond">購入条件：IRIAM関係のイラスト・デザインを1回以上購入した方のみ</div>
+    <div class="ot-secret-desc">イベント告知画像1点・サムネイル7点・応援アイコンリング1点・応援IRIAMヘッダー1点・アイコンリング3点・待ち受け3点・IRIAMヘッダー3点・Xヘッダー2点</div>
+  </div>
+  <div class="ot-secret-item">
+    <div class="ot-secret-name">IRIAM年間パック（前払いのみ）</div>
+    <div class="ot-secret-cond">購入条件：毎月パック購入1回以上した方のみ</div>
+    <div class="ot-secret-desc">特典内容は毎月パックと同じものの年間版</div>
+  </div>
+</div>`
+      }
+    };
+
+    function renderOtContentInner(cat) {
+      const data = OT_CAT_DATA[cat];
+      const inner = document.getElementById('ot-content-inner');
+      inner.innerHTML =
+        '<div class="ot-plan-btns">' +
+        data.items.map(i => {
+          const arr = i.desc.split('・').filter(d => d.trim() !== '');
+          const twoCol = arr.length >= 5;
+          let listHtml;
+          if (twoCol) {
+            const half = Math.ceil(arr.length / 2);
+            const left = arr.slice(0, half).map(d => `<li>${d}</li>`).join('');
+            const right = arr.slice(half).map(d => `<li>${d}</li>`).join('');
+            listHtml = `<div class="ot-plan-two-col"><ul class="ot-plan-list">${left}</ul><ul class="ot-plan-list">${right}</ul></div>`;
+          } else {
+            listHtml = `<ul class="ot-plan-list">${arr.map(d => `<li>${d}</li>`).join('')}</ul>`;
+          }
+          return `<button class="ot-plan-btn" data-simkey="${i.key}" onclick="selectOtItem(this)">
+            <span class="ot-plan-name">${i.label}</span>
+            ${listHtml}
+          </button>`;
+        }).join('') +
+        '</div>' + data.secretHtml;
+
+    }
+
+    /* セット：大カテゴリ選択 */
+    window.selectOtCat = function(btn) {
+      btn.closest('.sel-btns').querySelectorAll('.sel-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      psimOtKey = '';
+      renderOtContentInner(btn.dataset.otcat);
+      hidePsim();
+    };
+
+    /* セット：詳細項目選択 */
+    window.selectOtItem = function(btn) {
+      btn.closest('.ot-plan-btns').querySelectorAll('.ot-plan-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      psimOtKey = btn.dataset.simkey;
+      calcPsimPrice();
+    };
+
+    /* デザイン：詳細項目選択 */
+    window.selectDeItem = function(btn) {
+      btn.closest('.sel-btns').querySelectorAll('.sel-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      psimDeKey = btn.dataset.simkey;
+      calcPsimPrice();
+    };
+
+    window.calcPsimPrice = function() {
+      if (!PRICE) PRICE = buildPriceMap();
+
+      if (currentPsim === 'illust') {
+        if (!psimIlKey) { hidePsim(); return; }
+        let key = psimIlKey;
+        if (psimIlKey === '一枚絵') {
+          if (!psimIlPose) { hidePsim(); return; }
+          key = `一枚絵-${psimIlPose}`;
+        }
+        if (psimIlKey === 'SDイラスト') {
+          if (!psimIlSdPose) { hidePsim(); return; }
+          key = `SDイラスト-${psimIlSdPose}`;
+        }
+        const extra = getIlOptExtra();
+        const row = PRICE[key];
+        if (row?.flat) showPsimFlat(addPriceExtra(row.flat, extra), '固定価格');
+        else if (row) showPsimTiers(row, extra);
+        else showPsimConsult();
+        return;
+      }
+
+      if (currentPsim === 'design') {
+        if (!psimDeKey) { hidePsim(); return; }
+        const row = PRICE[psimDeKey];
+        if (row) showPsimTiers(row); else showPsimConsult();
+        return;
+      }
+
+      if (currentPsim === 'other') {
+        if (!psimOtKey) { hidePsim(); return; }
+        const row = PRICE[psimOtKey];
+        if (row) showPsimTiers(row); else showPsimConsult();
+      }
+    };
+
+    /* イラストオプション加算 */
+    function getIlOptExtra() {
+      const bg   = document.getElementById('il-opt-bg')?.value  ?? 'なし';
+      const diff = document.getElementById('il-opt-diff')?.value ?? 'なし';
+      let extra = 0;
+      if (bg === '簡易')    extra += 1000;
+      if (bg === '書き込み') extra += 5000;
+      if (diff !== 'なし')  extra += parseInt(diff) * 1000;
+      return extra;
+    }
+    function addPriceExtra(priceStr, extra) {
+      if (!extra) return priceStr;
+      return priceStr.replace(/¥([\d,]+)/g, (_, numStr) => {
+        const base = parseInt(numStr.replace(/,/g, ''));
+        return '¥' + (base + extra).toLocaleString();
+      });
+    }
+
+    function showPsimConsult() {
+      tiersEl.innerHTML = '<div style="font-size:16px;font-weight:700;color:var(--blue-d);">要相談</div>';
+      subEl.textContent = '※ 内容・仕様によりお見積もりいたします。';
+    }
+    function showPsimTiers(row, extra = 0) {
+      const available = TIER_DEFS.filter(t => row[t.key]);
+      if (!available.length) { hidePsim(); return; }
+      tiersEl.innerHTML = available.map(t => {
+        const price = extra ? addPriceExtra(row[t.key], extra) : row[t.key];
+        return `<div class="psim-tier"><div class="t-name">${t.label}</div><div class="t-price ${t.cls}">${price}</div></div>`;
+      }).join('');
+      subEl.textContent = '※概算です。詳細はお問い合わせください。';
+      resultEl.classList.add('visible');
+    }
+    function showPsimFlat(price, label) {
+      tiersEl.innerHTML = `<div class="psim-flat">${price}</div>`;
+      subEl.textContent = `※${label}`;
+      resultEl.classList.add('visible');
+    }
+    window.hidePsim = function() {
+      tiersEl.innerHTML = '<div style="color:var(--muted);font-size:14px;padding:4px 0;">依頼内容を選ぶと表示されます</div>';
+      subEl.textContent = '';
+    };
+  })();
+
+  /* ===== WORKSを料金早見表の後ろ（有償依頼・利用規約の前）に移動 ===== */
+  document.addEventListener('DOMContentLoaded', () => {
+    const worksSection  = document.getElementById('works')?.closest('.section');
+    const priceSection  = document.querySelector('.price-tabs')?.closest('.section');
+    if (!worksSection || !priceSection) return;
+    priceSection.after(worksSection);
+  });
+
   /* PAGE TOP 表示制御 */
   document.addEventListener('DOMContentLoaded', () => {
     const pagetopBtn = document.getElementById('pagetop-btn');
@@ -3259,7 +4304,7 @@ ${val('ot-note')}
           <div><span>企業様</span>2026年6月〜</div>
         </div>
       </div>
-      <a href="#works" class="status-cta-btn">まずは制作実績を確認する</a>
+      <a href="#works" class="status-cta-btn">制作実績を確認する</a>
     </div>
   </div>
 </div>
