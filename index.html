@@ -708,8 +708,8 @@
       .works-sub-group .tier-group { flex:none !important; width:100% !important; }
       .contact-popup { display:none !important; }
       .item-badge-pill { white-space:normal; word-break:keep-all; }
-      .sel-btn { flex:0 0 calc(50% - 4px); font-size:12px; padding:10px 8px; }
-      .psim-tab-btn { font-size:12px; padding:10px 8px; }
+      .sel-btn { flex:0 0 calc(50% - 4px) !important; font-size:12px !important; padding:10px 8px !important; }
+      .psim-tab-btn { font-size:12px !important; padding:10px 8px !important; }
     }
     @media (min-width:681px) {
       .popup-overlay, .contact-popup-mobile { display:none !important; }
@@ -1047,6 +1047,10 @@
     .works-check-btn:hover { background:#e03591; }
     .works-check-btn:active { transform:scale(.97); }
     .works-check-btn .arrow { display:inline-block; margin-left:6px; }
+    @media (max-width:680px) {
+      .sel-btn { flex:0 0 calc(50% - 4px) !important; font-size:12px !important; padding:10px 8px !important; }
+      .psim-tab-btn { font-size:12px !important; padding:10px 8px !important; }
+    }
   </style>
 </head>
 <body>
