@@ -857,7 +857,7 @@
     /* ===== ボタン選択UI ===== */
     .sel-group { margin-bottom:30px; }
     .sel-label { font-size:13px; font-weight:700; color:var(--text); letter-spacing:.06em; margin-bottom:8px; text-align:center; }
-    .sel-btns { display:flex; flex-wrap:wrap; justify-content:center; gap:8px; }
+    .sel-btns { display:flex; flex-direction:column; gap:8px; }
     .sel-placeholder { display:block; color:var(--muted); font-size:13px; padding:6px 0; width:100%; text-align:center; }
 
     /* ===== セット プランボタン（2列・セット名大＋特典内容小） ===== */
@@ -892,7 +892,7 @@
     .de-opt-btns { display:flex; gap:6px; flex-wrap:wrap; }
     .de-opt-btns .sel-btn { flex:none; padding:5px 12px; font-size:12px; }
     .sel-btn {
-      flex:0 0 calc(25% - 6px); padding:12px 10px; border:2px solid var(--border); border-radius:var(--r-md);
+      width:100%; padding:12px 10px; border:2px solid var(--border); border-radius:var(--r-md);
       background:white; color:var(--text); font-family:'Noto Sans JP',sans-serif;
       font-size:14px; font-weight:700; cursor:pointer; text-align:center;
       transition:background .15s, color .15s, border-color .15s;
@@ -3154,95 +3154,8 @@ ${val('ot-note')}
   }, { threshold: 0.08 });
   document.querySelectorAll('.fade-in').forEach(el => io.observe(el));
 
-  /* ===== デザインWORKSプレビュー展開 ===== */
-  (function initDesignPreview() {
-    const moreHtml  = count => `さらに見る（+${count}枚）<span class="preview-arrow">▼</span>`;
-    const closeHtml = () => `折りたたむ ↑`;
-
-    document.querySelectorAll('[data-works="design"] .works-sub-group').forEach(sg => {
-      const tierGroups = Array.from(sg.querySelectorAll('.tier-group'));
-      if (tierGroups.length === 0) return;
-
-      if (tierGroups.length === 1) {
-        /* --- tier-group1つ：最初3枚グリッド表示、残りを折りたたみ --- */
-        const items = Array.from(tierGroups[0].querySelectorAll('.gallery-item'));
-        if (items.length <= 3) return;
-        items.slice(3).forEach(el => el.classList.add('preview-hidden'));
-        makeBtn(sg, items.length - 3,
-          () => items.slice(3).forEach(el => el.classList.remove('preview-hidden')),
-          () => { items.slice(3).forEach(el => el.classList.add('preview-hidden')); sg.scrollIntoView({ behavior:'smooth', block:'nearest' }); }
-        );
-      } else {
-        /* --- tier-group2つ以上：横並び表示 --- */
-        sg.classList.add('preview-state');
-        const sgTitle = sg.querySelector('.works-sub-title')?.textContent.trim();
-        if (sgTitle === 'ネームロゴ') sg.classList.add('is-name-logo');
-        let totalHidden = 0;
-
-        if (tierGroups.length === 2) {
-          /* tier-groupが2つ: [0]から1枚、[1]から2枚 = 計3枚表示 */
-          const tg1 = tierGroups[1];
-          const tg1Imgs = tg1.querySelector('.tier-group-images');
-          Array.from(tierGroups[0].querySelectorAll('.gallery-item')).slice(1).forEach(el => { el.classList.add('preview-hidden'); totalHidden++; });
-          Array.from(tg1.querySelectorAll('.gallery-item')).slice(2).forEach(el => { el.classList.add('preview-hidden'); totalHidden++; });
-          /* tier-group[1]を2/3幅・2列グリッドにして横一列3枚にする */
-          tg1.style.flex = '0 0 calc((100% - 10px) * 2 / 3)';
-          if (tg1Imgs) tg1Imgs.style.gridTemplateColumns = '1fr 1fr';
-          if (totalHidden === 0) return; /* 合計3枚以下：preview-state維持で横並び表示 */
-          makeBtn(sg, totalHidden,
-            () => {
-              sg.classList.remove('preview-state');
-              tg1.style.flex = '';
-              if (tg1Imgs) tg1Imgs.style.gridTemplateColumns = '';
-              sg.querySelectorAll('.gallery-item.preview-hidden').forEach(el => el.classList.remove('preview-hidden'));
-            },
-            () => {
-              sg.querySelectorAll('.gallery-item').forEach(el => el.classList.remove('preview-hidden'));
-              Array.from(tierGroups[0].querySelectorAll('.gallery-item')).slice(1).forEach(el => el.classList.add('preview-hidden'));
-              Array.from(tg1.querySelectorAll('.gallery-item')).slice(2).forEach(el => el.classList.add('preview-hidden'));
-              sg.classList.add('preview-state');
-              tg1.style.flex = '0 0 calc((100% - 10px) * 2 / 3)';
-              if (tg1Imgs) tg1Imgs.style.gridTemplateColumns = '1fr 1fr';
-              sg.scrollIntoView({ behavior:'smooth', block:'nearest' });
-            }
-          );
-        } else {
-          /* tier-groupが3つ以上: 各1枚表示 */
-          tierGroups.forEach(tg => {
-            Array.from(tg.querySelectorAll('.gallery-item')).slice(1).forEach(el => { el.classList.add('preview-hidden'); totalHidden++; });
-          });
-          if (totalHidden === 0) return;
-          const totalItems = sg.querySelectorAll('.gallery-item').length;
-          if (totalItems <= 3) {
-            sg.querySelectorAll('.gallery-item.preview-hidden').forEach(el => el.classList.remove('preview-hidden'));
-            sg.classList.remove('preview-state');
-            return;
-          }
-          makeBtn(sg, totalHidden,
-            () => { sg.classList.remove('preview-state'); sg.querySelectorAll('.gallery-item.preview-hidden').forEach(el => el.classList.remove('preview-hidden')); },
-            () => { tierGroups.forEach(tg => Array.from(tg.querySelectorAll('.gallery-item')).slice(1).forEach(el => el.classList.add('preview-hidden'))); sg.classList.add('preview-state'); sg.scrollIntoView({ behavior:'smooth', block:'nearest' }); }
-          );
-        }
-      }
-    });
-
-    function makeBtn(sg, count, onExpand, onCollapse) {
-      const btn = document.createElement('button');
-      btn.className = 'preview-more-btn';
-      btn.innerHTML = moreHtml(count);
-      let open = false;
-      btn.onclick = () => {
-        open = !open;
-        open ? onExpand() : onCollapse();
-        btn.innerHTML = open ? closeHtml() : moreHtml(count);
-        btn.dataset.open = open;
-      };
-      sg.appendChild(btn);
-    }
-  })();
-
-  /* ===== イラストWORKSプレビュー展開 ===== */
-  (function initIllustPreview() {
+  /* ===== WORKSプレビュー展開（全パネル共通：1枚表示→さらに見る） ===== */
+  (function initWORKSPreview() {
     const moreHtml  = count => `さらに見る（+${count}枚）<span class="preview-arrow">▼</span>`;
     const closeHtml = () => `折りたたむ ↑`;
 
@@ -3255,86 +3168,19 @@ ${val('ot-note')}
         open = !open;
         open ? onExpand() : onCollapse();
         btn.innerHTML = open ? closeHtml() : moreHtml(count);
-        btn.dataset.open = open;
       };
       sg.appendChild(btn);
     }
 
-    document.querySelectorAll('[data-works="illust"] .works-sub-group').forEach(sg => {
-      const tierGroups = Array.from(sg.querySelectorAll('.tier-group'));
-
-      if (tierGroups.length === 0) {
-        /* tier-groupなし（ガチャ玉・Vキャラ等）: 直接のgallery-itemを3枚制限 */
-        const items = Array.from(sg.querySelectorAll('.gallery-item'));
-        if (items.length <= 3) return;
-        items.slice(3).forEach(el => el.classList.add('preview-hidden'));
-        makeBtn(sg, items.length - 3,
-          () => items.slice(3).forEach(el => el.classList.remove('preview-hidden')),
-          () => { items.slice(3).forEach(el => el.classList.add('preview-hidden')); sg.scrollIntoView({ behavior:'smooth', block:'nearest' }); }
-        );
-        return;
-      }
-
-      if (tierGroups.length === 1) {
-        /* tier-group 1つ: 最初3枚表示、残りを折りたたみ */
-        const items = Array.from(tierGroups[0].querySelectorAll('.gallery-item'));
-        if (items.length <= 3) return;
-        items.slice(3).forEach(el => el.classList.add('preview-hidden'));
-        makeBtn(sg, items.length - 3,
-          () => items.slice(3).forEach(el => el.classList.remove('preview-hidden')),
-          () => { items.slice(3).forEach(el => el.classList.add('preview-hidden')); sg.scrollIntoView({ behavior:'smooth', block:'nearest' }); }
-        );
-        return;
-      }
-
-      /* tier-group 2つ以上: 横並び表示 */
-      sg.classList.add('preview-state');
-      let totalHidden = 0;
-
-      if (tierGroups.length === 2) {
-        /* [0]から1枚、[1]から2枚 = 計3枚横一列 */
-        const tg1 = tierGroups[1];
-        const tg1Imgs = tg1.querySelector('.tier-group-images');
-        Array.from(tierGroups[0].querySelectorAll('.gallery-item')).slice(1).forEach(el => { el.classList.add('preview-hidden'); totalHidden++; });
-        Array.from(tg1.querySelectorAll('.gallery-item')).slice(2).forEach(el => { el.classList.add('preview-hidden'); totalHidden++; });
-        /* tier-group[1]を2/3幅・2列グリッドにして横一列3枚にする */
-        tg1.style.flex = '0 0 calc((100% - 10px) * 2 / 3)';
-        if (tg1Imgs) tg1Imgs.style.gridTemplateColumns = '1fr 1fr';
-        if (totalHidden === 0) return; /* 合計3枚以下: preview-state維持・横並び表示 */
-        makeBtn(sg, totalHidden,
-          () => {
-            sg.classList.remove('preview-state');
-            tg1.style.flex = '';
-            if (tg1Imgs) tg1Imgs.style.gridTemplateColumns = '';
-            sg.querySelectorAll('.gallery-item.preview-hidden').forEach(el => el.classList.remove('preview-hidden'));
-          },
-          () => {
-            sg.querySelectorAll('.gallery-item').forEach(el => el.classList.remove('preview-hidden'));
-            Array.from(tierGroups[0].querySelectorAll('.gallery-item')).slice(1).forEach(el => el.classList.add('preview-hidden'));
-            Array.from(tg1.querySelectorAll('.gallery-item')).slice(2).forEach(el => el.classList.add('preview-hidden'));
-            sg.classList.add('preview-state');
-            tg1.style.flex = '0 0 calc((100% - 10px) * 2 / 3)';
-            if (tg1Imgs) tg1Imgs.style.gridTemplateColumns = '1fr 1fr';
-            sg.scrollIntoView({ behavior:'smooth', block:'nearest' });
-          }
-        );
-      } else {
-        /* 3つ以上: 各1枚表示 */
-        tierGroups.forEach(tg => {
-          Array.from(tg.querySelectorAll('.gallery-item')).slice(1).forEach(el => { el.classList.add('preview-hidden'); totalHidden++; });
-        });
-        if (totalHidden === 0) return;
-        const totalItems = sg.querySelectorAll('.gallery-item').length;
-        if (totalItems <= 3) {
-          sg.querySelectorAll('.gallery-item.preview-hidden').forEach(el => el.classList.remove('preview-hidden'));
-          sg.classList.remove('preview-state');
-          return;
-        }
-        makeBtn(sg, totalHidden,
-          () => { sg.classList.remove('preview-state'); sg.querySelectorAll('.gallery-item.preview-hidden').forEach(el => el.classList.remove('preview-hidden')); },
-          () => { tierGroups.forEach(tg => Array.from(tg.querySelectorAll('.gallery-item')).slice(1).forEach(el => el.classList.add('preview-hidden'))); sg.classList.add('preview-state'); sg.scrollIntoView({ behavior:'smooth', block:'nearest' }); }
-        );
-      }
+    document.querySelectorAll('.works-sub-group').forEach(sg => {
+      const items = Array.from(sg.querySelectorAll('.gallery-item'));
+      if (items.length <= 1) return;
+      const hidden = items.length - 1;
+      items.slice(1).forEach(el => el.classList.add('preview-hidden'));
+      makeBtn(sg, hidden,
+        () => items.slice(1).forEach(el => el.classList.remove('preview-hidden')),
+        () => { items.slice(1).forEach(el => el.classList.add('preview-hidden')); sg.scrollIntoView({ behavior:'smooth', block:'nearest' }); }
+      );
     });
   })();
 
