@@ -435,13 +435,23 @@
     .scroll-overlay {
       display:none;
       position:absolute; top:0; left:0; right:0; bottom:0;
-      background:rgba(150,191,221,0.55);
-      align-items:center; justify-content:center;
-      font-size:14px; font-weight:700; color:white;
-      letter-spacing:.06em; z-index:5;
-      cursor:pointer;
+      background:rgba(150,191,221,0.6);
+      flex-direction:column; align-items:center; justify-content:center;
+      gap:6px; z-index:5; cursor:pointer;
     }
     @media (max-width:680px) { .scroll-overlay { display:flex; } }
+    .scroll-overlay-arrow {
+      font-size:40px; color:white; line-height:1;
+      animation:swipe-right 1.1s ease-in-out infinite;
+    }
+    .scroll-overlay-text {
+      font-size:13px; font-weight:700; color:white; letter-spacing:.06em;
+    }
+    @keyframes swipe-right {
+      0%   { transform:translateX(-10px); opacity:.3; }
+      50%  { transform:translateX(4px);  opacity:1; }
+      100% { transform:translateX(14px); opacity:.3; }
+    }
     .td-spacer { display:block; height:12px; overflow:hidden; color:transparent; user-select:none; pointer-events:none; }
     .td-sub { padding-left:1.6em; font-size:13px; color:var(--muted); }
 
@@ -2620,7 +2630,6 @@
 
     <!-- デザイン -->
     <div class="price-wrap" data-table="design">
-      <div class="scroll-overlay" id="design-scroll-overlay">右にスライドして確認 →</div>
       <!-- ロゴ：梅・竹・松・松HiEnd -->
       <table>
         <thead><tr><th>ロゴ</th><th>梅（ライトプラン）</th><th>竹（スタンダード）</th><th>松（ハイグレード）</th><th>松（ハイエンド）</th></tr></thead>
@@ -2857,14 +2866,28 @@
     document.querySelector(`.price-wrap[data-table="${price}"]`).classList.add('active');
   }
 
-  /* デザインタブ：スクロールまたはタップでオーバーレイを消す */
+  /* デザインタブ：各テーブルに個別オーバーレイを追加、スクロールで全消し */
   (function() {
     const wrap = document.querySelector('.price-wrap[data-table="design"]');
-    const overlay = document.getElementById('design-scroll-overlay');
-    if (!wrap || !overlay) return;
-    const hide = () => { overlay.style.display = 'none'; };
-    wrap.addEventListener('scroll', hide, { once: true });
-    overlay.addEventListener('click', hide, { once: true });
+    if (!wrap) return;
+    const overlayHTML = '<span class="scroll-overlay-arrow">→</span><span class="scroll-overlay-text">右にスライドして確認</span>';
+    const overlays = [];
+
+    wrap.querySelectorAll('table').forEach(table => {
+      const div = document.createElement('div');
+      div.style.cssText = 'position:relative;';
+      table.parentNode.insertBefore(div, table);
+      div.appendChild(table);
+      const ov = document.createElement('div');
+      ov.className = 'scroll-overlay';
+      ov.innerHTML = overlayHTML;
+      div.appendChild(ov);
+      overlays.push(ov);
+      ov.addEventListener('click', hideAll, { once: true });
+    });
+
+    function hideAll() { overlays.forEach(ov => { ov.style.display = 'none'; }); }
+    wrap.addEventListener('scroll', hideAll, { once: true });
   })();
 
   /* ===== WORKSタブ切り替え ===== */
