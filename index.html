@@ -981,15 +981,16 @@
     .psim-result { display:block; margin:20px 0 4px; padding:20px 24px; background:linear-gradient(135deg,rgba(150,191,221,.12) 0%,#fff 100%); border:2px solid var(--blue); border-radius:16px; text-align:center; }
     .psim-result-label { font-size:12px; color:var(--muted); letter-spacing:.08em; margin-bottom:12px; }
     .psim-tiers { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-bottom:6px; }
-    .psim-tier { text-align:center; background:var(--bg); border:1px solid var(--border); border-radius:10px; padding:10px 16px; min-width:80px; }
+    .psim-tier { text-align:center; background:var(--bg); border:1px solid var(--border); border-radius:10px; padding:10px 16px; min-width:80px; min-height:72px; display:flex; flex-direction:column; justify-content:center; }
     .psim-tier .t-name { font-size:11px; color:var(--muted); margin-bottom:4px; }
-    .psim-tier .t-price { font-size:17px; font-weight:700; font-family:'Mulish',sans-serif; }
+    .psim-tier .t-price { font-size:17px; font-weight:700; font-family:'Mulish',sans-serif; line-height:1.6; }
+    .psim-tier .t-price small { font-size:12px; font-weight:400; font-family:'Noto Sans JP',sans-serif; color:var(--muted); display:block; }
     .psim-flat { font-size:26px; font-weight:700; font-family:'Mulish',sans-serif; color:var(--text); }
     .psim-sub { font-size:11px; color:var(--muted); margin-top:8px; }
 
     /* ===== ボタン選択UI ===== */
     .sel-group { margin-bottom:30px; }
-    .sel-label { font-size:13px; font-weight:700; color:var(--text); letter-spacing:.06em; margin-top:50px; margin-bottom:10px; text-align:center; }
+    .sel-label { font-size:13px; font-weight:700; color:var(--text); letter-spacing:.06em; margin-bottom:8px; text-align:center; }
     .sel-btns { display:flex; flex-wrap:wrap; justify-content:center; gap:8px; }
     .sel-placeholder { display:block; color:var(--muted); font-size:13px; padding:6px 0; width:100%; text-align:center; }
 
@@ -3552,7 +3553,7 @@ ${val('ot-note')}
         map[key] = {};
         for (let i = 1; i < cells.length; i++) {
           const colKey = COL[heads[i]];
-          const price  = cells[i].textContent.trim();
+          const price  = cells[i].innerHTML.trim();
           if (colKey && price && price !== '—') map[key][colKey] = price;
         }
       });
@@ -3717,7 +3718,7 @@ ${val('ot-note')}
         map[key] = {};
         for (let i = 1; i < cells.length; i++) {
           const colKey = COL[heads[i]];
-          const price  = cells[i].textContent.trim();
+          const price  = cells[i].innerHTML.trim();
           if (colKey && price && price !== '—') map[key][colKey] = price;
         }
       });
@@ -3876,7 +3877,7 @@ ${val('ot-note')}
         map[key] = {};
         for (let i = 1; i < cells.length; i++) {
           const colKey = COL[heads[i]];
-          const price  = cells[i].textContent.trim();
+          const price  = cells[i].innerHTML.trim();
           if (colKey && price && price !== '—') map[key][colKey] = price;
         }
       });
