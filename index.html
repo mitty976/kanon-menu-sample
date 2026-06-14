@@ -3205,6 +3205,7 @@ ${val('ot-note')}
 
   /* ===== WORKSプレビュー展開（全パネル共通：1枚表示→さらに見る） ===== */
   (function initWORKSPreview() {
+    if (window.innerWidth > 680) return;
     const moreHtml  = count => `さらに見る（+${count}枚）<span class="preview-arrow">▼</span>`;
     const closeHtml = () => `折りたたむ ↑`;
 
