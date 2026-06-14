@@ -370,7 +370,7 @@
       flex:0 0 calc((100% - 30px) / 4);
     }
     [data-works="design"] .works-sub-group.preview-state > .tier-group > .tier-group-images {
-      grid-template-columns:1fr;
+      grid-template-columns:repeat(3,1fr);
     }
     [data-works="design"] .works-sub-group.preview-state > .preview-more-btn {
       flex:1 0 100%; margin-top:4px;
@@ -386,7 +386,7 @@
       flex:0 0 calc((100% - 20px) / 3); min-width:0; margin-bottom:0;
     }
     [data-works="illust"] .works-sub-group.preview-state > .tier-group > .tier-group-images {
-      grid-template-columns:1fr;
+      grid-template-columns:repeat(3,1fr);
     }
     [data-works="illust"] .works-sub-group.preview-state > .preview-more-btn {
       flex:1 0 100%; margin-top:4px;
@@ -706,6 +706,10 @@
       .tier-group-images { grid-template-columns:1fr; }
       .contact-popup { display:none !important; }
       .item-badge-pill { white-space:normal; word-break:keep-all; }
+      [data-works="design"] .works-sub-group.preview-state > .tier-group > .tier-group-images,
+      [data-works="illust"] .works-sub-group.preview-state > .tier-group > .tier-group-images {
+        grid-template-columns:1fr;
+      }
     }
     @media (min-width:681px) {
       .popup-overlay, .contact-popup-mobile { display:none !important; }
